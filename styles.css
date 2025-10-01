@@ -227,20 +227,25 @@ body {
 
 .card-1 {
     top: 20%;
-    left: 10%;
+    left: 20%;
     animation-delay: 0s;
 }
 
 .card-2 {
-    top: 50%;
+    top: 10%;
     right: 20%;
-    animation-delay: 2s;
+    animation-delay: 1s;
 }
 
 .card-3 {
-    bottom: 20%;
+    bottom: 10%;
     left: 30%;
-    animation-delay: 4s;
+    animation-delay: 3s;
+}
+.card-4 {
+    bottom: 20%;
+    left: 60%;
+    animation-delay: 2s;
 }
 
 @keyframes float {
