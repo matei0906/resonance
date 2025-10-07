@@ -41,9 +41,14 @@ export function initializeAnimations() {
     
     // Observe elements for animation
     const animateElements = document.querySelectorAll('.feature-card, .stat, .contact-form');
+    if (!animateElements || animateElements.length === 0) return;
     animateElements.forEach(el => {
         el.classList.add('animate-on-scroll');
-        observer.observe(el);
+        try {
+            observer.observe(el);
+        } catch (err) {
+            console.warn('Animation observe error', err);
+        }
     });
 }
 
@@ -88,7 +93,10 @@ const animationStyles = `
     }
 `;
 
-// Inject animation styles
-const styleSheet = document.createElement('style');
-styleSheet.textContent = animationStyles;
-document.head.appendChild(styleSheet);
+// Inject animation styles if not already present
+if (!document.getElementById('rpisocial-animation-styles')) {
+    const styleSheet = document.createElement('style');
+    styleSheet.id = 'rpisocial-animation-styles';
+    styleSheet.textContent = animationStyles;
+    document.head.appendChild(styleSheet);
+}

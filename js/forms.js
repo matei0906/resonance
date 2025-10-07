@@ -12,9 +12,12 @@ export function initializeFormHandling() {
 
 // Handle main signup form
 function handleFormSubmission(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     
-    const formData = new FormData(e.target);
+    const formEl = e && e.target ? e.target : null;
+    if (!formEl) return;
+
+    const formData = new FormData(formEl);
     const data = Object.fromEntries(formData);
     
     // Basic validation
@@ -32,9 +35,11 @@ function handleFormSubmission(e) {
     // Simulate API call
     setTimeout(() => {
         showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-        e.target.reset();
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+        try { formEl.reset(); } catch (err) {}
+        if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     }, 2000);
 }
 

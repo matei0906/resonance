@@ -8,6 +8,8 @@ export function initializeModals() {
     const getStartedBtn = document.getElementById('getStartedBtn');
     const closeBtn = document.querySelector('.close');
 
+    if (!modal) return; // nothing to do if modal container is missing
+
     // Login 
     const loginContent = `
         <h2>Welcome Back</h2>
@@ -67,10 +69,10 @@ export function initializeModals() {
         document.body.style.overflow = 'auto'; // Restore scrolling
     }
 
-    // Event listeners
-    loginBtn.addEventListener('click', () => openModal(loginContent));
-    signupBtn.addEventListener('click', () => openModal(signupContent));
-    getStartedBtn.addEventListener('click', () => openModal(signupContent));
+    // Event listeners (guarded)
+    if (loginBtn) loginBtn.addEventListener('click', () => openModal(loginContent));
+    if (signupBtn) signupBtn.addEventListener('click', () => openModal(signupContent));
+    if (getStartedBtn) getStartedBtn.addEventListener('click', () => openModal(signupContent));
 
     // Close modal events
     closeBtn.addEventListener('click', closeModal);
