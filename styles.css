@@ -42,7 +42,7 @@
 .stat h3 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #667eea;
+    color: #ff8e3e;
     margin-bottom: 0.5rem;
 }
 
@@ -103,7 +103,7 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #720000;
 }
 
 .contact-info h3 {
@@ -122,7 +122,7 @@
 }
 
 .contact-item i {
-    color: #667eea;
+    color: #720000;
     font-size: 1.2rem;
 }
 
@@ -162,7 +162,7 @@
 .feature-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -221,7 +221,7 @@
 }
 
 .footer-section ul li a:hover {
-    color: #667eea;
+    color: #720000;
 }
 
 .social-links {
@@ -243,7 +243,7 @@
 }
 
 .social-link:hover {
-    background: #667eea;
+    background: #720000;
     transform: translateY(-2px);
 }
 
@@ -276,7 +276,7 @@
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -323,7 +323,7 @@
 
 .card i {
     font-size: 2rem;
-    color: #667eea;
+    color: #720000;
 }
 
 .card span {
@@ -441,7 +441,7 @@ body {
 .logo {
     font-size: 1.8rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -462,7 +462,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #667eea;
+    color: #720000;
 }
 
 .nav-link::after {
@@ -472,7 +472,7 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
     transition: width 0.3s ease;
 }
 
@@ -499,7 +499,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
     color: white;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
@@ -511,12 +511,12 @@ body {
 
 .btn-outline {
     background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
+    color: #720000;
+    border: 2px solid #720000;
 }
 
 .btn-outline:hover {
-    background: #667eea;
+    background: #720000;
     color: white;
     transform: translateY(-2px);
 }
