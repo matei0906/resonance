@@ -1,7 +1,7 @@
 /* css/about.css */
 .about {
     padding: 6rem 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #fff7f0 0%, #ffe9d6 100%);
 }
 
 .about-content {
@@ -42,7 +42,7 @@
 .stat h3 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #ff8e3e;
+    color: #ff8a3d;
     margin-bottom: 0.5rem;
 }
 
@@ -103,7 +103,7 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #720000;
+    border-color: #9b2c1a;
 }
 
 .contact-info h3 {
@@ -122,7 +122,7 @@
 }
 
 .contact-item i {
-    color: #720000;
+    color: #9b2c1a;
     font-size: 1.2rem;
 }
 
@@ -162,7 +162,7 @@
 .feature-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -221,7 +221,7 @@
 }
 
 .footer-section ul li a:hover {
-    color: #720000;
+    color: #9b2c1a;
 }
 
 .social-links {
@@ -243,7 +243,7 @@
 }
 
 .social-link:hover {
-    background: #720000;
+    background: #9b2c1a;
     transform: translateY(-2px);
 }
 
@@ -256,7 +256,7 @@
 /* css/hero.css */
 .hero {
     padding: 8rem 0 4rem;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #fff7f0 0%, #ffe9d6 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -276,7 +276,7 @@
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -323,7 +323,7 @@
 
 .card i {
     font-size: 2rem;
-    color: #720000;
+    color: #9b2c1a;
 }
 
 .card span {
@@ -439,12 +439,22 @@ body {
 }
 
 .logo {
-    font-size: 1.8rem;
+    font-family: 'Machina BC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 2.2rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.logo-link {
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.logo-link:hover {
+    transform: scale(1.05);
 }
 
 .nav-menu {
@@ -462,7 +472,7 @@ body {
 }
 
 .nav-link:hover {
-    color: #720000;
+    color: #9b2c1a;
 }
 
 .nav-link::after {
@@ -472,7 +482,7 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     transition: width 0.3s ease;
 }
 
@@ -499,24 +509,24 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #720000 0%, #ff8e3e 100%);
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 138, 61, 0.35);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 138, 61, 0.5);
 }
 
 .btn-outline {
     background: transparent;
-    color: #720000;
-    border: 2px solid #720000;
+    color: #9b2c1a;
+    border: 2px solid #9b2c1a;
 }
 
 .btn-outline:hover {
-    background: #720000;
+    background: #9b2c1a;
     color: white;
     transform: translateY(-2px);
 }
@@ -524,6 +534,33 @@ body {
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
+}
+/* CTA quiz button glow */
+.btn-glow {
+    position: relative;
+    box-shadow: 0 0 0 rgba(155, 44, 26, 0);
+}
+
+.btn-glow::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 10px;
+    background: radial-gradient(ellipse at center, rgba(255, 138, 61, 0.35), rgba(155, 44, 26, 0));
+    filter: blur(8px);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    opacity: 0.8;
+}
+
+.btn-glow:hover::after {
+    opacity: 1;
+}
+
+.quiz-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
 }
 
 /* Mobile Navigation */

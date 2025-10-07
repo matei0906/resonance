@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resonance Quiz</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Machina+BC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .quiz-wrapper { max-width: 720px; margin: 120px auto 60px; padding: 0 20px; }
+        .quiz-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 2rem; }
+        .quiz-steps { display: flex; gap: 8px; margin-bottom: 1rem; }
+        .quiz-step { height: 6px; background: #eee; border-radius: 999px; flex: 1; overflow: hidden; }
+        .quiz-step.active { background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%); }
+        .quiz-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: #333; }
+        .quiz-subtitle { color: #666; margin-bottom: 1.5rem; }
+        .quiz-slide { display: none; }
+        .quiz-slide.active { display: block; }
+        .strength { margin-top: 0.5rem; }
+        .strength-bar { height: 8px; background: #eee; border-radius: 999px; overflow: hidden; }
+        .strength-bar > span { display: block; height: 100%; width: 0%; transition: width 0.3s ease, background-color 0.3s ease; }
+        .strength-label { font-size: 0.9rem; color: #666; margin-top: 0.4rem; font-weight: 500; }
+        .actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; }
+        .error-text { color: #b00020; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+        
+        /* Interests slide - matching home page styles */
+        .interests { display: grid; gap: 1.25rem; }
+        .orbit-area { 
+            position: relative; 
+            height: 260px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #fff7f0 0%, #ffe9d6 100%); 
+            border: 1px solid #ffe1c7; 
+            border-radius: 16px; 
+        }
+        .avatar { 
+            width: 110px; 
+            height: 110px; 
+            border-radius: 50%; 
+            background: #fff; 
+            border: 3px solid #ffd2ae; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #9b2c1a; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+        }
+        .avatar i { font-size: 42px; }
+        .orbit-container { position: absolute; inset: 0; pointer-events: none; }
+        .orbit-chip { 
+            position: absolute; 
+            left: 50%; 
+            top: 50%; 
+            transform-origin: 0 0; 
+            white-space: nowrap; 
+            background: #fff; 
+            border: 1px solid #f0f0f0; 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            font-size: 0.9rem; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); 
+            pointer-events: auto; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .orbit-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(var(--radius)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
+        }
+        .orbiting { animation: orbit var(--speed, 10s) linear infinite; }
+        
+        .bank { display: flex; flex-direction: column; gap: 1rem; }
+        .bank-section { 
+            background: #f8f9fa; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 16px; 
+            padding: 1.5rem; 
+            transition: border-color 0.3s ease;
+        }
+        .bank-section:hover {
+            border-color: #9b2c1a;
+        }
+        .bank-title { 
+            font-weight: 600; 
+            color: #9b2c1a; 
+            font-size: 1.1rem; 
+            margin-bottom: 1rem; 
+        }
+        .chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .bank-chip { 
+            background: #fff; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+        }
+        .bank-chip:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
+            border-color: #9b2c1a;
+        }
+        .bank-chip.selected { 
+            background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%); 
+            border-color: #9b2c1a; 
+            color: white; 
+        }
+        .flying-chip { 
+            position: fixed; 
+            z-index: 3000; 
+            background: #fff; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        }
+        .bank-other { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+            margin-top: 1rem; 
+        }
+        .bank-other input { 
+            flex: 1;
+            height: auto;
+            padding: 0.75rem; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px; 
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .bank-other input:focus {
+            outline: none;
+            border-color: #9b2c1a;
+        }
+        .bank-other button { 
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="../index.html#home" class="logo-link">
+                    <h1 class="logo">Resonance</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="../index.html#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="../index.html#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="../index.html#contact" class="nav-link">Connect</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a class="btn btn-outline" href="../index.html#contact">Back</a>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="quiz-wrapper">
+        <div class="quiz-card">
+            <div class="quiz-steps">
+                <div class="quiz-step active"></div>
+                <div class="quiz-step"></div>
+                <div class="quiz-step"></div>
+            </div>
+            <h2 class="quiz-title">Create your profile</h2>
+            <p class="quiz-subtitle">Start by telling us who you are. This helps matches feel more personal.</p>
+
+            <!-- Slide 1: Account basics -->
+            <section class="quiz-slide active" id="slide-1">
+                <form id="accountForm" novalidate>
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                         <div class="error-text" id="nameError">Please enter your full name.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">RPI Email</label>
+                        <input type="email" id="email" name="email" placeholder="name@rpi.edu" required>
+                         <div class="error-text" id="emailError">Please use a valid RPI email (ends with @rpi.edu).</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Choose a secure password" required>
+                        <div class="strength">
+                            <div class="strength-bar"><span id="strengthFill"></span></div>
+                            <div class="strength-label" id="strengthLabel">Strength: —</div>
+                        </div>
+                         <div class="error-text" id="passwordError">Password must be at least 8 characters.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm">Confirm Password</label>
+                        <input type="password" id="confirm" name="confirm" placeholder="Re-enter your password" required>
+                        <div class="error-text" id="confirmError">Passwords do not match.</div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn btn-primary btn-large" id="nextBtn">Next</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Slide 2 placeholder (interests) -->
+            <section class="quiz-slide" id="slide-2">
+                <div class="interests">
+                    <div class="orbit-area">
+                        <div class="avatar" id="orbitCenter" aria-label="Interests center"><i class="fas fa-user"></i></div>
+                        <div class="orbit-container" id="orbitContainer"></div>
+                    </div>
+                    <div class="bank">
+                        <div class="bank-section" data-cat="genres">
+                            <div class="bank-title">Genres</div>
+                            <div class="chips" id="bank-genres">
+                                <button type="button" class="bank-chip" data-cat="genres">Pop</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Rock</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Jazz</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Classical</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Hip-Hop</button>
+                                <button type="button" class="bank-chip" data-cat="genres">EDM</button>
+                                <button type="button" class="bank-chip" data-cat="genres">R&B</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Indie</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Metal</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-genres" placeholder="Other genre">
+                                <button type="button" class="btn btn-outline" data-add="genres">Add</button>
+                            </div>
+                        </div>
+                        <div class="bank-section" data-cat="instruments">
+                            <div class="bank-title">Instruments</div>
+                            <div class="chips" id="bank-instruments">
+                                <button type="button" class="bank-chip" data-cat="instruments">Guitar</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Bass</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Piano</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Drums</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Vocals</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Violin</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Saxophone</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Trumpet</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Production</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-instruments" placeholder="Other instrument">
+                                <button type="button" class="btn btn-outline" data-add="instruments">Add</button>
+                            </div>
+                        </div>
+                        <div class="bank-section" data-cat="availability">
+                            <div class="bank-title">Availability</div>
+                            <div class="chips" id="bank-availability">
+                                <button type="button" class="bank-chip" data-cat="availability">Mornings</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Afternoons</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Evenings</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Weekdays</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Weekends</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-availability" placeholder="Other availability">
+                                <button type="button" class="btn btn-outline" data-add="availability">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="../index.html#contact" class="btn btn-outline">Back to Home</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Simple password strength evaluation
+        function evaluateStrength(password) {
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            return score; // 0-5
+        }
+
+        const pw = document.getElementById('password');
+        const confirmPw = document.getElementById('confirm');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthLabel = document.getElementById('strengthLabel');
+        const confirmError = document.getElementById('confirmError');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateStrength() {
+            const val = pw.value || '';
+            const score = evaluateStrength(val);
+            const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+            strengthFill.style.width = widths[score];
+            let color = '#eee';
+            let label = '—';
+            if (score <= 1) { color = '#d9534f'; label = 'Very Weak'; }
+            else if (score === 2) { color = '#f0ad4e'; label = 'Weak'; }
+            else if (score === 3) { color = '#ffd166'; label = 'Fair'; }
+            else if (score === 4) { color = '#ff8a3d'; label = 'Good'; }
+            else if (score >= 5) { color = '#9b2c1a'; label = 'Strong'; }
+            strengthFill.style.background = color;
+            strengthLabel.textContent = 'Strength: ' + label;
+        }
+
+        pw.addEventListener('input', updateStrength);
+        document.addEventListener('DOMContentLoaded', updateStrength);
+
+        function validateStep1() {
+            // Reset errors
+            const nameEl = document.getElementById('name');
+            const emailEl = document.getElementById('email');
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+
+            nameError.style.display = 'none';
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+            confirmError.style.display = 'none';
+
+            let firstInvalid = null;
+
+            const name = nameEl.value.trim();
+            if (!name) {
+                nameError.style.display = 'block';
+                firstInvalid = firstInvalid || nameEl;
+            }
+
+            const email = emailEl.value.trim();
+            const emailValid = /.+@rpi\.edu$/i.test(email);
+            if (!emailValid) {
+                emailError.style.display = 'block';
+                firstInvalid = firstInvalid || emailEl;
+            }
+
+            const password = pw.value;
+            if (password.length < 8) {
+                passwordError.style.display = 'block';
+                firstInvalid = firstInvalid || pw;
+            }
+
+            const confirm = confirmPw.value;
+            if (password && confirm && password !== confirm) {
+                confirmError.style.display = 'block';
+                firstInvalid = firstInvalid || confirmPw;
+            }
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                return false;
+            }
+            return true;
+        }
+
+        nextBtn.addEventListener('click', function() {
+            if (!validateStep1()) return;
+            document.getElementById('slide-1').classList.remove('active');
+            document.getElementById('slide-2').classList.add('active');
+            const steps = document.querySelectorAll('.quiz-step');
+            steps[1].classList.add('active');
+            document.querySelector('.quiz-title').textContent = 'Tell us what you like';
+            document.querySelector('.quiz-subtitle').textContent = 'Pick genres, instruments, and when you’re free to play.';
+        });
+
+        // Clear specific errors on input
+        document.getElementById('name').addEventListener('input', () => {
+            document.getElementById('nameError').style.display = 'none';
+        });
+        document.getElementById('email').addEventListener('input', () => {
+            document.getElementById('emailError').style.display = 'none';
+        });
+        pw.addEventListener('input', () => {
+            document.getElementById('passwordError').style.display = 'none';
+        });
+        confirmPw.addEventListener('input', () => {
+            document.getElementById('confirmError').style.display = 'none';
+        });
+
+        // Orbiting chips logic
+        const orbitContainer = document.getElementById('orbitContainer');
+        const center = document.getElementById('orbitCenter');
+        const bank = document.querySelector('.bank');
+
+        const orbitChips = [];
+        const orbitRings = [70, 105, 140];
+        let nextAngle = 0;
+
+        function placeOrbitChip(label, category) {
+            const chip = document.createElement('div');
+            chip.className = 'orbit-chip orbiting';
+            chip.textContent = label;
+            chip.dataset.cat = category || '';
+            const ring = orbitRings[Math.floor(orbitChips.length / 8)] || orbitRings[orbitRings.length - 1];
+            const angle = nextAngle;
+            nextAngle = (nextAngle + 45) % 360;
+            chip.style.setProperty('--radius', ring + 'px');
+            chip.style.setProperty('--speed', (10 + (orbitChips.length % 8)) + 's');
+            chip.style.transform = `rotate(${angle}deg) translateX(${ring}px) rotate(${-angle}deg)`;
+            orbitContainer.appendChild(chip);
+            orbitChips.push({ chip, ring, angle, label, category });
+        }
+
+        function animateChipToOrbit(buttonEl) {
+            if (buttonEl.classList.contains('selected')) return;
+            buttonEl.classList.add('selected');
+
+            const rect = buttonEl.getBoundingClientRect();
+            const fly = document.createElement('div');
+            fly.className = 'flying-chip';
+            fly.textContent = buttonEl.textContent;
+            fly.style.left = rect.left + 'px';
+            fly.style.top = rect.top + 'px';
+            document.body.appendChild(fly);
+
+            const centerRect = center.getBoundingClientRect();
+            const targetX = centerRect.left + centerRect.width / 2;
+            const targetY = centerRect.top + centerRect.height / 2;
+
+            const duration = 450;
+            const start = performance.now();
+            const startX = rect.left;
+            const startY = rect.top;
+
+            function step(now) {
+                const t = Math.min(1, (now - start) / duration);
+                const e = 1 - Math.pow(1 - t, 3);
+                const x = startX + (targetX - startX) * e;
+                const y = startY + (targetY - startY) * e;
+                fly.style.left = x + 'px';
+                fly.style.top = y + 'px';
+                if (t < 1) requestAnimationFrame(step);
+                else {
+                    fly.remove();
+                    placeOrbitChip(buttonEl.textContent, buttonEl.dataset.cat || '');
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        // Toggle from bank: select -> orbit, or if already selected, remove selection and corresponding orbiting chip
+        if (bank) {
+            bank.addEventListener('click', function(e) {
+                const chip = e.target.closest('.bank-chip');
+                if (!chip) return;
+                if (!chip.classList.contains('selected')) {
+                    animateChipToOrbit(chip);
+                } else {
+                    chip.classList.remove('selected');
+                    // remove orbiting chip with same label
+                    const idx = orbitChips.findIndex(c => c.label === chip.textContent);
+                    if (idx !== -1) {
+                        orbitChips[idx].chip.remove();
+                        orbitChips.splice(idx, 1);
+                    }
+                }
+            });
+        }
+
+        // Clicking an orbiting chip removes it and unselects corresponding bank chip
+        orbitContainer.addEventListener('click', function(e) {
+            const oc = e.target.closest('.orbit-chip');
+            if (!oc) return;
+            const label = oc.textContent;
+            oc.remove();
+            const idx = orbitChips.findIndex(c => c.label === label);
+            if (idx !== -1) orbitChips.splice(idx, 1);
+            const bankChip = Array.from(document.querySelectorAll('.bank-chip.selected')).find(b => b.textContent === label);
+            if (bankChip) bankChip.classList.remove('selected');
+        });
+
+        // Add custom 'Other' entries
+        document.querySelectorAll('[data-add]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cat = this.getAttribute('data-add');
+                const input = document.getElementById('other-' + cat);
+                const value = (input.value || '').trim();
+                if (!value) return;
+                const container = document.getElementById('bank-' + cat);
+                const newChip = document.createElement('button');
+                newChip.type = 'button';
+                newChip.className = 'bank-chip';
+                newChip.dataset.cat = cat;
+                newChip.textContent = value;
+                container.appendChild(newChip);
+                input.value = '';
+                // animate it immediately to orbit
+                animateChipToOrbit(newChip);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
