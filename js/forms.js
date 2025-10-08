@@ -1,91 +1,77 @@
 // js/forms.js
-import { showSuccessMessage, showErrorMessage } from './notifications.js';
 
-// Form handling
-export function initializeFormHandling() {
-    // Main signup form
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-        signupForm.addEventListener('submit', handleFormSubmission);
-    }
-}
-
-// Handle main signup form
-function handleFormSubmission(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+export function handleLoginForm(event) {
+    const formData = new FormData(event.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
     
     // Basic validation
-    if (!validateForm(data)) {
+    if (!email || !password) {
+        alert('Please fill in all fields');
         return;
     }
     
-    // Simulate form submission
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    
-    submitBtn.textContent = 'Creating Account...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-        e.target.reset();
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }, 2000);
-}
-
-// Handle login form
-export function handleLoginForm(e) {
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    
-    if (!data.email || !data.password) {
-        showErrorMessage('Please fill in all fields');
+    // Check if it's an RPI email
+    if (!email.includes('@rpi.edu')) {
+        alert('Please use your RPI email address');
         return;
     }
     
-    // Simulate login
-    showSuccessMessage('Login successful! Redirecting...');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
+    // Simulate login process
+    console.log('Login attempt:', { email, password });
+    
+    // For now, just show success message
+    alert('Login successful! Welcome to Resonance.');
+    
+    // Close modal
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // In a real application, you would:
+    // 1. Send credentials to your backend
+    // 2. Handle authentication response
+    // 3. Store user session/token
+    // 4. Redirect to dashboard or update UI
 }
 
-// Handle signup form in modal
-export function handleSignupModalForm(e) {
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+export function handleSignupModalForm(event) {
+    const formData = new FormData(event.target);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const interests = formData.get('interests');
     
-    if (!validateForm(data)) {
+    // Basic validation
+    if (!name || !email || !password) {
+        alert('Please fill in all required fields');
         return;
     }
     
-    showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
-}
-
-// Form validation function
-function validateForm(data) {
-    if (!data.name || !data.email || !data.password) {
-        showErrorMessage('Please fill in all required fields');
-        return false;
+    // Check if it's an RPI email
+    if (!email.includes('@rpi.edu')) {
+        alert('Please use your RPI email address');
+        return;
     }
     
-    if (!data.email.includes('@rpi.edu')) {
-        showErrorMessage('Please use your RPI email address');
-        return false;
+    // Simulate signup process
+    console.log('Signup attempt:', { name, email, password, interests });
+    
+    // For now, just show success message
+    alert('Account created successfully! Welcome to Resonance.');
+    
+    // Close modal
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
     
-    if (data.password.length < 6) {
-        showErrorMessage('Password must be at least 6 characters long');
-        return false;
-    }
-    
-    return true;
+    // In a real application, you would:
+    // 1. Send user data to your backend
+    // 2. Handle account creation response
+    // 3. Send verification email
+    // 4. Redirect to onboarding or dashboard
 }
