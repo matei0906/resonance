@@ -12,10 +12,13 @@
 }
 
 .about-text h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-family: 'Hyperiot', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 3.2rem;
+    font-weight: 400;
     margin-bottom: 1.5rem;
     color: #333;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 .about-text p {
@@ -202,8 +205,13 @@
 
 .footer-section h3,
 .footer-section h4 {
+    font-family: 'Hyperiot', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1.8rem;
+    font-weight: 400;
     margin-bottom: 1rem;
     color: white;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 .footer-section ul {
@@ -256,13 +264,28 @@
 /* css/hero.css */
 .hero {
     padding: 8rem 0 4rem;
-    background: linear-gradient(135deg, #fff7f0 0%, #ffe9d6 100%);
+    background: url('https://media.giphy.com/media/jtQduZBP4hIPL37pJv/giphy.gif') center/cover;
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     align-items: center;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
 }
 
 .hero-content {
+    position: relative;
+    z-index: 2;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -273,21 +296,29 @@
 }
 
 .hero-title {
-    font-size: 3.5rem;
-    font-weight: 700;
+    font-family: 'Hyperiot', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 5rem;
+    font-weight: 400;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #ffb366 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-description {
     font-size: 1.2rem;
-    color: #666;
+    color: #ffffff;
     margin-bottom: 2rem;
     line-height: 1.6;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .hero-actions {
@@ -310,7 +341,7 @@
 
 .card {
     position: absolute;
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
     padding: 1.5rem;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -391,6 +422,30 @@
     }
 }
 /* css/layout.css */
+
+/* Hyperiot Font Face */
+@font-face {
+    font-family: 'Hyperiot';
+    src: url('./fonts/Hyperiot.woff2') format('woff2'),
+         url('./fonts/Hyperiot.woff') format('woff'),
+         url('./fonts/Hyperiot.otf') format('opentype'),
+         url('./fonts/Hyperiot.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Hyperiot Font Styling Enhancements */
+.hyperiot-text {
+    font-family: 'Hyperiot', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -438,23 +493,46 @@ body {
     margin: 0 auto;
 }
 
+.nav-brand {
+    margin-left: -30px;
+}
+
 .logo {
-    font-family: 'Machina BC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 2.2rem;
-    font-weight: 700;
+    font-family: 'Hyperiot', 'Machina BC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 2.8rem;
+    font-weight: 400;
     background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: 0.1em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
 }
 
 .logo-link {
     text-decoration: none;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .logo-link:hover {
     transform: scale(1.05);
+}
+
+.logo-image {
+    height: 80px;
+    width: auto;
+    transition: transform 0.3s ease;
+    order: -1;
+}
+
+.logo-link:hover .logo-image {
+    transform: scale(1.1);
 }
 
 .nav-menu {
@@ -521,12 +599,12 @@ body {
 
 .btn-outline {
     background: transparent;
-    color: #9b2c1a;
-    border: 2px solid #9b2c1a;
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
 }
 
 .btn-outline:hover {
-    background: #9b2c1a;
+    background: #ff6b35;
     color: white;
     transform: translateY(-2px);
 }
@@ -580,11 +658,17 @@ body {
 
 /* Section Styles */
 .section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-family: 'Hyperiot', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 3.2rem;
+    font-weight: 400;
     text-align: center;
     margin-bottom: 1rem;
     color: #333;
+    letter-spacing: 0.1em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
 }
 
 .section-subtitle {
