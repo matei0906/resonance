@@ -24,9 +24,9 @@ Resonance makes everything permanent by being a committed place where musicians 
 - **Styling**: Custom CSS with modern animations and responsive design
 - **Fonts**: Hyperiot (custom display font) + Inter (body text)
 - **Icons**: Font Awesome
-- **Background**: Animated GIF from Giphy (because why not make it fun?)
+- **Background**: Animated GIF from Giphy
 - **Architecture**: Modular JavaScript with ES6 imports
-- 
+
 ## Design Philosophy:
 
 I wanted this to feel like a modern music platform, not just another boring website. So I went with:
@@ -35,7 +35,7 @@ I wanted this to feel like a modern music platform, not just another boring webs
 - **Custom typography**: Hyperiot font for that futuristic, music-tech vibe
 - **Animated backgrounds**: Because static is boring
 - **Smooth interactions**: Hover effects, transitions, the works
-- **Mobile-first**: Works great on phones (because that's where students live)
+- **Mobile-first**: Works great on phones
 
 ## Key Sections:
 
@@ -69,4 +69,5 @@ Questions? Ideas? Want to jam? Hit us up!
 *Built by Matei Stoica(Project Lead) and Sebastian Brzozowski (Project Developer) for RCOS Fall 2025.*
 
 *P.S. - If you're reading this and you play guitar/bass/drums/anything, let's jam! 🎸*
+
 
