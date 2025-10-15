@@ -693,6 +693,13 @@ body {
     transform: translateY(-2px);
 }
 
+#loginBtn:hover {
+    background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(255, 138, 61, 0.35);
+}
+
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
