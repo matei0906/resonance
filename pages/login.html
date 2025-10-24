@@ -51,7 +51,9 @@
             <div style="max-width: 400px; margin: 4rem auto; background: white; padding: 3rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
                 <h2 style="font-family: 'Hyperiot', sans-serif; font-size: 2.5rem; font-weight: 400; text-align: center; margin-bottom: 2rem; color: #333; letter-spacing: 0.1em; text-transform: uppercase;">Login</h2>
                 
-                <form class="login-form">
+                <div id="loginMessage" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; text-align: center;"></div>
+                
+                <form class="login-form" id="loginForm">
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
@@ -62,7 +64,7 @@
                         <input type="password" id="password" name="password" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 1rem;">Log In</button>
+                    <button type="submit" class="btn btn-primary btn-large" id="loginBtn" style="width: 100%; margin-top: 1rem;">Log In</button>
                 </form>
                 
                 <div style="text-align: center; margin-top: 2rem;">
@@ -72,6 +74,63 @@
             </div>
         </div>
     </main>
+
+    <script type="module">
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginMessage = document.getElementById('loginMessage');
+
+        function showMessage(message, isError = false) {
+            loginMessage.textContent = message;
+            loginMessage.style.display = 'block';
+            loginMessage.style.backgroundColor = isError ? '#fee' : '#efe';
+            loginMessage.style.color = isError ? '#c33' : '#2a7d2a';
+            loginMessage.style.border = isError ? '1px solid #fcc' : '1px solid #cfc';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(loginForm);
+            const email = formData.get('email');
+            const password = formData.get('password');
+            
+            if (!email || !password) {
+                showMessage('Please fill in all fields', true);
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            try {
+                const response = await fetch('../api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1500);
+                } else {
+                    showMessage(data.error || 'Login failed', true);
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Log In';
+                }
+            } catch (error) {
+                showMessage('Connection error. Please try again.', true);
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Log In';
+            }
+        });
+    </script>
 
     <script type="module" src="../js/main.js"></script>
 </body>

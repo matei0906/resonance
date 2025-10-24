@@ -39,7 +39,7 @@ function handleFormSubmission(e) {
 }
 
 // Handle login form
-export function handleLoginForm(e) {
+export async function handleLoginForm(e) {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
     
@@ -48,15 +48,34 @@ export function handleLoginForm(e) {
         return;
     }
     
-    // Simulate login
-    showSuccessMessage('Login successful! Redirecting...');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
+    try {
+        const response = await fetch('./api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccessMessage('Login successful! Redirecting...');
+            setTimeout(() => {
+                document.getElementById('modal').style.display = 'none';
+                // Optionally redirect: window.location.href = 'dashboard.html';
+            }, 1500);
+        } else {
+            showErrorMessage(result.error || 'Login failed');
+        }
+    } catch (error) {
+        showErrorMessage('Connection error. Please try again.');
+        console.error('Login error:', error);
+    }
 }
 
 // Handle signup form in modal
-export function handleSignupModalForm(e) {
+export async function handleSignupModalForm(e) {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
     
@@ -64,10 +83,30 @@ export function handleSignupModalForm(e) {
         return;
     }
     
-    showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
+    try {
+        const response = await fetch('./api/register.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccessMessage('Account created successfully! Welcome to RPISocial!');
+            setTimeout(() => {
+                document.getElementById('modal').style.display = 'none';
+                // Optionally redirect: window.location.href = 'dashboard.html';
+            }, 1500);
+        } else {
+            showErrorMessage(result.error || 'Registration failed');
+        }
+    } catch (error) {
+        showErrorMessage('Connection error. Please try again.');
+        console.error('Registration error:', error);
+    }
 }
 
 // Form validation function

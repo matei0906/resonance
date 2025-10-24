@@ -221,6 +221,7 @@
 
             <!-- Slide 2 placeholder (interests) -->
             <section class="quiz-slide" id="slide-2">
+                <div id="registrationMessage" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; text-align: center;"></div>
                 <div class="interests">
                     <div class="orbit-area">
                         <div class="avatar" id="orbitCenter" aria-label="Interests center"><i class="fas fa-user"></i></div>
@@ -280,7 +281,8 @@
                     </div>
                 </div>
                 <div class="actions">
-                    <a href="../index.html#contact" class="btn btn-outline">Back to Home</a>
+                    <button type="button" class="btn btn-outline" id="backBtn">Back</button>
+                    <button type="button" class="btn btn-primary btn-large" id="submitBtn">Create Account</button>
                 </div>
             </section>
         </div>
@@ -298,214 +300,287 @@
             return score; // 0-5
         }
 
-        const pw = document.getElementById('password');
-        const confirmPw = document.getElementById('confirm');
-        const strengthFill = document.getElementById('strengthFill');
-        const strengthLabel = document.getElementById('strengthLabel');
-        const confirmError = document.getElementById('confirmError');
-        const nextBtn = document.getElementById('nextBtn');
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const pw = document.getElementById('password');
+            const confirmPw = document.getElementById('confirm');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthLabel = document.getElementById('strengthLabel');
+            const confirmError = document.getElementById('confirmError');
+            const nextBtn = document.getElementById('nextBtn');
 
-        function updateStrength() {
-            const val = pw.value || '';
-            const score = evaluateStrength(val);
-            const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
-            strengthFill.style.width = widths[score];
-            let color = '#eee';
-            let label = '—';
-            if (score <= 1) { color = '#d9534f'; label = 'Very Weak'; }
-            else if (score === 2) { color = '#f0ad4e'; label = 'Weak'; }
-            else if (score === 3) { color = '#ffd166'; label = 'Fair'; }
-            else if (score === 4) { color = '#ff8a3d'; label = 'Good'; }
-            else if (score >= 5) { color = '#9b2c1a'; label = 'Strong'; }
-            strengthFill.style.background = color;
-            strengthLabel.textContent = 'Strength: ' + label;
-        }
-
-        pw.addEventListener('input', updateStrength);
-        document.addEventListener('DOMContentLoaded', updateStrength);
-
-        function validateStep1() {
-            // Reset errors
-            const nameEl = document.getElementById('name');
-            const emailEl = document.getElementById('email');
-            const nameError = document.getElementById('nameError');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
-
-            nameError.style.display = 'none';
-            emailError.style.display = 'none';
-            passwordError.style.display = 'none';
-            confirmError.style.display = 'none';
-
-            let firstInvalid = null;
-
-            const name = nameEl.value.trim();
-            if (!name) {
-                nameError.style.display = 'block';
-                firstInvalid = firstInvalid || nameEl;
+            function updateStrength() {
+                const val = pw.value || '';
+                const score = evaluateStrength(val);
+                const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+                strengthFill.style.width = widths[score];
+                let color = '#eee';
+                let label = '—';
+                if (score <= 1) { color = '#d9534f'; label = 'Very Weak'; }
+                else if (score === 2) { color = '#f0ad4e'; label = 'Weak'; }
+                else if (score === 3) { color = '#ffd166'; label = 'Fair'; }
+                else if (score === 4) { color = '#ff8a3d'; label = 'Good'; }
+                else if (score >= 5) { color = '#9b2c1a'; label = 'Strong'; }
+                strengthFill.style.background = color;
+                strengthLabel.textContent = 'Strength: ' + label;
             }
 
-            const email = emailEl.value.trim();
-            const emailValid = /.+@rpi\.edu$/i.test(email);
-            if (!emailValid) {
-                emailError.style.display = 'block';
-                firstInvalid = firstInvalid || emailEl;
-            }
+            pw.addEventListener('input', updateStrength);
+            updateStrength(); // Initial call
 
-            const password = pw.value;
-            if (password.length < 8) {
-                passwordError.style.display = 'block';
-                firstInvalid = firstInvalid || pw;
-            }
+            function validateStep1() {
+                // Reset errors
+                const nameEl = document.getElementById('name');
+                const emailEl = document.getElementById('email');
+                const nameError = document.getElementById('nameError');
+                const emailError = document.getElementById('emailError');
+                const passwordError = document.getElementById('passwordError');
 
-            const confirm = confirmPw.value;
-            if (password && confirm && password !== confirm) {
-                confirmError.style.display = 'block';
-                firstInvalid = firstInvalid || confirmPw;
-            }
+                nameError.style.display = 'none';
+                emailError.style.display = 'none';
+                passwordError.style.display = 'none';
+                confirmError.style.display = 'none';
 
-            if (firstInvalid) {
-                firstInvalid.focus();
-                return false;
-            }
-            return true;
-        }
+                let firstInvalid = null;
 
-        nextBtn.addEventListener('click', function() {
-            if (!validateStep1()) return;
-            document.getElementById('slide-1').classList.remove('active');
-            document.getElementById('slide-2').classList.add('active');
-            const steps = document.querySelectorAll('.quiz-step');
-            steps[1].classList.add('active');
-            document.querySelector('.quiz-title').textContent = 'Tell us what you like';
-            document.querySelector('.quiz-subtitle').textContent = 'Pick genres, instruments, and when you’re free to play.';
-        });
-
-        // Clear specific errors on input
-        document.getElementById('name').addEventListener('input', () => {
-            document.getElementById('nameError').style.display = 'none';
-        });
-        document.getElementById('email').addEventListener('input', () => {
-            document.getElementById('emailError').style.display = 'none';
-        });
-        pw.addEventListener('input', () => {
-            document.getElementById('passwordError').style.display = 'none';
-        });
-        confirmPw.addEventListener('input', () => {
-            document.getElementById('confirmError').style.display = 'none';
-        });
-
-        // Orbiting chips logic
-        const orbitContainer = document.getElementById('orbitContainer');
-        const center = document.getElementById('orbitCenter');
-        const bank = document.querySelector('.bank');
-
-        const orbitChips = [];
-        const orbitRings = [70, 105, 140];
-        let nextAngle = 0;
-
-        function placeOrbitChip(label, category) {
-            const chip = document.createElement('div');
-            chip.className = 'orbit-chip orbiting';
-            chip.textContent = label;
-            chip.dataset.cat = category || '';
-            const ring = orbitRings[Math.floor(orbitChips.length / 8)] || orbitRings[orbitRings.length - 1];
-            const angle = nextAngle;
-            nextAngle = (nextAngle + 45) % 360;
-            chip.style.setProperty('--radius', ring + 'px');
-            chip.style.setProperty('--speed', (10 + (orbitChips.length % 8)) + 's');
-            chip.style.transform = `rotate(${angle}deg) translateX(${ring}px) rotate(${-angle}deg)`;
-            orbitContainer.appendChild(chip);
-            orbitChips.push({ chip, ring, angle, label, category });
-        }
-
-        function animateChipToOrbit(buttonEl) {
-            if (buttonEl.classList.contains('selected')) return;
-            buttonEl.classList.add('selected');
-
-            const rect = buttonEl.getBoundingClientRect();
-            const fly = document.createElement('div');
-            fly.className = 'flying-chip';
-            fly.textContent = buttonEl.textContent;
-            fly.style.left = rect.left + 'px';
-            fly.style.top = rect.top + 'px';
-            document.body.appendChild(fly);
-
-            const centerRect = center.getBoundingClientRect();
-            const targetX = centerRect.left + centerRect.width / 2;
-            const targetY = centerRect.top + centerRect.height / 2;
-
-            const duration = 450;
-            const start = performance.now();
-            const startX = rect.left;
-            const startY = rect.top;
-
-            function step(now) {
-                const t = Math.min(1, (now - start) / duration);
-                const e = 1 - Math.pow(1 - t, 3);
-                const x = startX + (targetX - startX) * e;
-                const y = startY + (targetY - startY) * e;
-                fly.style.left = x + 'px';
-                fly.style.top = y + 'px';
-                if (t < 1) requestAnimationFrame(step);
-                else {
-                    fly.remove();
-                    placeOrbitChip(buttonEl.textContent, buttonEl.dataset.cat || '');
+                const name = nameEl.value.trim();
+                if (!name) {
+                    nameError.style.display = 'block';
+                    firstInvalid = firstInvalid || nameEl;
                 }
-            }
-            requestAnimationFrame(step);
-        }
 
-        // Toggle from bank: select -> orbit, or if already selected, remove selection and corresponding orbiting chip
-        if (bank) {
-            bank.addEventListener('click', function(e) {
-                const chip = e.target.closest('.bank-chip');
-                if (!chip) return;
-                if (!chip.classList.contains('selected')) {
-                    animateChipToOrbit(chip);
-                } else {
-                    chip.classList.remove('selected');
-                    // remove orbiting chip with same label
-                    const idx = orbitChips.findIndex(c => c.label === chip.textContent);
-                    if (idx !== -1) {
-                        orbitChips[idx].chip.remove();
-                        orbitChips.splice(idx, 1);
+                const email = emailEl.value.trim();
+                const emailValid = /.+@rpi\.edu$/i.test(email);
+                if (!emailValid) {
+                    emailError.style.display = 'block';
+                    firstInvalid = firstInvalid || emailEl;
+                }
+
+                const password = pw.value;
+                if (password.length < 8) {
+                    passwordError.style.display = 'block';
+                    firstInvalid = firstInvalid || pw;
+                }
+
+                const confirm = confirmPw.value;
+                if (password && confirm && password !== confirm) {
+                    confirmError.style.display = 'block';
+                    firstInvalid = firstInvalid || confirmPw;
+                }
+
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    return false;
+                }
+                return true;
+            }
+
+            nextBtn.addEventListener('click', function() {
+                if (!validateStep1()) return;
+                document.getElementById('slide-1').classList.remove('active');
+                document.getElementById('slide-2').classList.add('active');
+                const steps = document.querySelectorAll('.quiz-step');
+                steps[1].classList.add('active');
+                document.querySelector('.quiz-title').textContent = 'Tell us what you like';
+                document.querySelector('.quiz-subtitle').textContent = 'Pick genres, instruments, and when you\'re free to play.';
+            });
+
+            // Back button to return to slide 1
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    document.getElementById('slide-2').classList.remove('active');
+                    document.getElementById('slide-1').classList.add('active');
+                    const steps = document.querySelectorAll('.quiz-step');
+                    steps[1].classList.remove('active');
+                    document.querySelector('.quiz-title').textContent = 'Create your profile';
+                    document.querySelector('.quiz-subtitle').textContent = 'Start by telling us who you are. This helps matches feel more personal.';
+                });
+            }
+
+            // Submit button to register account
+            const submitBtn = document.getElementById('submitBtn');
+            const registrationMessage = document.getElementById('registrationMessage');
+
+            function showRegistrationMessage(message, isError = false) {
+                registrationMessage.textContent = message;
+                registrationMessage.style.display = 'block';
+                registrationMessage.style.backgroundColor = isError ? '#fee' : '#efe';
+                registrationMessage.style.color = isError ? '#c33' : '#2a7d2a';
+                registrationMessage.style.border = isError ? '1px solid #fcc' : '1px solid #cfc';
+            }
+
+            if (submitBtn) {
+                submitBtn.addEventListener('click', async function() {
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const password = pw.value;
+
+                    // Collect selected interests
+                    const interests = orbitChips.map(c => ({
+                        label: c.label,
+                        category: c.category
+                    }));
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Creating Account...';
+
+                    try {
+                        const response = await fetch('../api/register.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ name, email, password, interests })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            showRegistrationMessage('Account created successfully! Redirecting...');
+                            setTimeout(() => {
+                                window.location.href = '../index.html';
+                            }, 1500);
+                        } else {
+                            showRegistrationMessage(data.error || 'Registration failed', true);
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Create Account';
+                        }
+                    } catch (error) {
+                        showRegistrationMessage('Connection error. Please try again.', true);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Create Account';
+                    }
+                });
+            }
+
+            // Clear specific errors on input
+            document.getElementById('name').addEventListener('input', () => {
+                document.getElementById('nameError').style.display = 'none';
+            });
+            document.getElementById('email').addEventListener('input', () => {
+                document.getElementById('emailError').style.display = 'none';
+            });
+            pw.addEventListener('input', () => {
+                document.getElementById('passwordError').style.display = 'none';
+            });
+            confirmPw.addEventListener('input', () => {
+                document.getElementById('confirmError').style.display = 'none';
+            });
+
+            // Orbiting chips logic
+            const orbitContainer = document.getElementById('orbitContainer');
+            const center = document.getElementById('orbitCenter');
+            const bank = document.querySelector('.bank');
+
+            const orbitChips = [];
+            const orbitRings = [70, 105, 140];
+            let nextAngle = 0;
+
+            function placeOrbitChip(label, category) {
+                const chip = document.createElement('div');
+                chip.className = 'orbit-chip orbiting';
+                chip.textContent = label;
+                chip.dataset.cat = category || '';
+                const ring = orbitRings[Math.floor(orbitChips.length / 8)] || orbitRings[orbitRings.length - 1];
+                const angle = nextAngle;
+                nextAngle = (nextAngle + 45) % 360;
+                chip.style.setProperty('--radius', ring + 'px');
+                chip.style.setProperty('--speed', (10 + (orbitChips.length % 8)) + 's');
+                chip.style.transform = `rotate(${angle}deg) translateX(${ring}px) rotate(${-angle}deg)`;
+                orbitContainer.appendChild(chip);
+                orbitChips.push({ chip, ring, angle, label, category });
+            }
+
+            function animateChipToOrbit(buttonEl) {
+                if (buttonEl.classList.contains('selected')) return;
+                buttonEl.classList.add('selected');
+
+                const rect = buttonEl.getBoundingClientRect();
+                const fly = document.createElement('div');
+                fly.className = 'flying-chip';
+                fly.textContent = buttonEl.textContent;
+                fly.style.left = rect.left + 'px';
+                fly.style.top = rect.top + 'px';
+                document.body.appendChild(fly);
+
+                const centerRect = center.getBoundingClientRect();
+                const targetX = centerRect.left + centerRect.width / 2;
+                const targetY = centerRect.top + centerRect.height / 2;
+
+                const duration = 450;
+                const start = performance.now();
+                const startX = rect.left;
+                const startY = rect.top;
+
+                function step(now) {
+                    const t = Math.min(1, (now - start) / duration);
+                    const e = 1 - Math.pow(1 - t, 3);
+                    const x = startX + (targetX - startX) * e;
+                    const y = startY + (targetY - startY) * e;
+                    fly.style.left = x + 'px';
+                    fly.style.top = y + 'px';
+                    if (t < 1) requestAnimationFrame(step);
+                    else {
+                        fly.remove();
+                        placeOrbitChip(buttonEl.textContent, buttonEl.dataset.cat || '');
                     }
                 }
-            });
-        }
+                requestAnimationFrame(step);
+            }
 
-        // Clicking an orbiting chip removes it and unselects corresponding bank chip
-        orbitContainer.addEventListener('click', function(e) {
-            const oc = e.target.closest('.orbit-chip');
-            if (!oc) return;
-            const label = oc.textContent;
-            oc.remove();
-            const idx = orbitChips.findIndex(c => c.label === label);
-            if (idx !== -1) orbitChips.splice(idx, 1);
-            const bankChip = Array.from(document.querySelectorAll('.bank-chip.selected')).find(b => b.textContent === label);
-            if (bankChip) bankChip.classList.remove('selected');
-        });
+            // Toggle from bank: select -> orbit, or if already selected, remove selection and corresponding orbiting chip
+            if (bank) {
+                bank.addEventListener('click', function(e) {
+                    const chip = e.target.closest('.bank-chip');
+                    if (!chip) return;
+                    if (!chip.classList.contains('selected')) {
+                        animateChipToOrbit(chip);
+                    } else {
+                        chip.classList.remove('selected');
+                        // remove orbiting chip with same label
+                        const idx = orbitChips.findIndex(c => c.label === chip.textContent);
+                        if (idx !== -1) {
+                            orbitChips[idx].chip.remove();
+                            orbitChips.splice(idx, 1);
+                        }
+                    }
+                });
+            }
 
-        // Add custom 'Other' entries
-        document.querySelectorAll('[data-add]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const cat = this.getAttribute('data-add');
-                const input = document.getElementById('other-' + cat);
-                const value = (input.value || '').trim();
-                if (!value) return;
-                const container = document.getElementById('bank-' + cat);
-                const newChip = document.createElement('button');
-                newChip.type = 'button';
-                newChip.className = 'bank-chip';
-                newChip.dataset.cat = cat;
-                newChip.textContent = value;
-                container.appendChild(newChip);
-                input.value = '';
-                // animate it immediately to orbit
-                animateChipToOrbit(newChip);
+            // Clicking an orbiting chip removes it and unselects corresponding bank chip
+            orbitContainer.addEventListener('click', function(e) {
+                const oc = e.target.closest('.orbit-chip');
+                if (!oc) return;
+                const label = oc.textContent;
+                oc.remove();
+                const idx = orbitChips.findIndex(c => c.label === label);
+                if (idx !== -1) orbitChips.splice(idx, 1);
+                const bankChip = Array.from(document.querySelectorAll('.bank-chip.selected')).find(b => b.textContent === label);
+                if (bankChip) bankChip.classList.remove('selected');
             });
-        });
+
+            // Add custom 'Other' entries
+            document.querySelectorAll('[data-add]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = this.getAttribute('data-add');
+                    const input = document.getElementById('other-' + cat);
+                    const value = (input.value || '').trim();
+                    if (!value) return;
+                    const container = document.getElementById('bank-' + cat);
+                    const newChip = document.createElement('button');
+                    newChip.type = 'button';
+                    newChip.className = 'bank-chip';
+                    newChip.dataset.cat = cat;
+                    newChip.textContent = value;
+                    container.appendChild(newChip);
+                    input.value = '';
+                    // animate it immediately to orbit
+                    animateChipToOrbit(newChip);
+                });
+            });
+
+        }); // End DOMContentLoaded
     </script>
     <script type="module" src="../js/main.js"></script>
 </body>

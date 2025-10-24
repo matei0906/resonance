@@ -1,6 +1,6 @@
 // js/forms.js
 
-export function handleLoginForm(event) {
+export async function handleLoginForm(event) {
     const formData = new FormData(event.target);
     const email = formData.get('email');
     const password = formData.get('password');
@@ -17,27 +17,39 @@ export function handleLoginForm(event) {
         return;
     }
     
-    // Simulate login process
-    console.log('Login attempt:', { email, password });
-    
-    // For now, just show success message
-    alert('Login successful! Welcome to Resonance.');
-    
-    // Close modal
-    const modal = document.getElementById('modal');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+    try {
+        const response = await fetch('../api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Login successful! Welcome to Resonance.');
+            
+            // Close modal
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Optionally redirect or update UI
+            // window.location.href = 'dashboard.html';
+        } else {
+            alert(data.error || 'Login failed. Please try again.');
+        }
+    } catch (error) {
+        alert('Connection error. Please try again later.');
+        console.error('Login error:', error);
     }
-    
-    // In a real application, you would:
-    // 1. Send credentials to your backend
-    // 2. Handle authentication response
-    // 3. Store user session/token
-    // 4. Redirect to dashboard or update UI
 }
 
-export function handleSignupModalForm(event) {
+export async function handleSignupModalForm(event) {
     const formData = new FormData(event.target);
     const name = formData.get('name');
     const email = formData.get('email');
@@ -56,22 +68,35 @@ export function handleSignupModalForm(event) {
         return;
     }
     
-    // Simulate signup process
-    console.log('Signup attempt:', { name, email, password, interests });
-    
-    // For now, just show success message
-    alert('Account created successfully! Welcome to Resonance.');
-    
-    // Close modal
-    const modal = document.getElementById('modal');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+    try {
+        const response = await fetch('../api/register.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password, interests })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Account created successfully! Welcome to Resonance.');
+            
+            // Close modal
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Optionally redirect
+            // window.location.href = 'dashboard.html';
+        } else {
+            alert(data.error || 'Registration failed. Please try again.');
+        }
+    } catch (error) {
+        alert('Connection error. Please try again later.');
+        console.error('Registration error:', error);
     }
-    
-    // In a real application, you would:
-    // 1. Send user data to your backend
-    // 2. Handle account creation response
-    // 3. Send verification email
-    // 4. Redirect to onboarding or dashboard
 }
+
