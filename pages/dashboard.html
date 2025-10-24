@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Resonance</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: 'Inter', sans-serif;
+        }
+        .dashboard-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+        }
+        .welcome-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .post-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .post-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .post-input:focus {
+            outline: none;
+            border-color: #9b2c1a;
+        }
+        .post-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #9b2c1a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .post-btn:hover {
+            background: #7a2215;
+        }
+        .posts-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .post {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .post:last-child {
+            border-bottom: none;
+        }
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .post-meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+        .logout-btn {
+            float: right;
+            padding: 8px 16px;
+            background: #ddd;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background: #ccc;
+        }
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <h2>Welcome to Resonance</h2>
+            <p id="welcomeText">Loading...</p>
+        </div>
+
+        <div class="post-form">
+            <textarea 
+                id="postInput" 
+                class="post-input" 
+                placeholder="What's on your mind?"></textarea>
+            <button class="post-btn" onclick="createPost()">Post</button>
+        </div>
+
+        <div class="posts-container" id="postsContainer">
+            <div class="empty-state">No posts yet. Be the first to post!</div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let posts = [];
+
+        // Check if user is logged in
+        async function checkAuth() {
+            try {
+                const response = await fetch('../api/check-session.php');
+                const data = await response.json();
+                
+                if (data.success && data.user) {
+                    currentUser = data.user;
+                    document.getElementById('welcomeText').textContent = `Hello, ${data.user.name}!`;
+                    loadPosts();
+                } else {
+                    window.location.href = '../pages/login.html';
+                }
+            } catch (error) {
+                window.location.href = '../pages/login.html';
+            }
+        }
+
+        // Create a new post
+        async function createPost() {
+            const postInput = document.getElementById('postInput');
+            const content = postInput.value.trim();
+            
+            if (!content) {
+                alert('Please write something to post!');
+                return;
+            }
+
+            try {
+                const response = await fetch('../api/create-post.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    postInput.value = '';
+                    loadPosts();
+                } else {
+                    alert(data.error || 'Failed to create post');
+                }
+            } catch (error) {
+                alert('Error creating post. Please try again.');
+            }
+        }
+
+        // Load all posts
+        async function loadPosts() {
+            try {
+                const response = await fetch('../api/get-posts.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    posts = data.posts;
+                    displayPosts();
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+            }
+        }
+
+        // Display posts
+        function displayPosts() {
+            const container = document.getElementById('postsContainer');
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="empty-state">No posts yet. Be the first to post!</div>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <div class="post-content">${escapeHtml(post.content)}</div>
+                    <div class="post-meta">
+                        Posted by ${escapeHtml(post.user_name)} • ${formatDate(post.created_at)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Logout
+        function logout() {
+            fetch('../api/logout.php', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '../index.html';
+                });
+        }
+
+        // Helper: Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Helper: Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + ' minutes ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
+            return date.toLocaleDateString();
+        }
+
+        // Initialize on page load
+        checkAuth();
+    </script>
+</body>
+</html>
