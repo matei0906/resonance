@@ -5,10 +5,8 @@ export function initializeModals() {
     const modal = document.getElementById('modal');
     const loginBtn = document.getElementById('loginBtn');
     const signupBtn = document.getElementById('signupBtn');
-    const getStartedBtn = document.getElementById('getStartedBtn');
+    // `getStartedBtn` exists only after hero partial loads; use delegated listener below
     const closeBtn = document.querySelector('.close');
-
-    if (!modal) return; // nothing to do if modal container is missing
 
     // Login 
     const loginContent = `
@@ -69,20 +67,19 @@ export function initializeModals() {
         document.body.style.overflow = 'auto'; // Restore scrolling
     }
 
-    // Event listeners (guarded)
+    // Event listeners (guard against missing elements)
     if (loginBtn) loginBtn.addEventListener('click', () => openModal(loginContent));
     if (signupBtn) signupBtn.addEventListener('click', () => openModal(signupContent));
-    if (getStartedBtn) getStartedBtn.addEventListener('click', () => openModal(signupContent));
 
     // Close modal events
-    closeBtn.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             closeModal();
         }
     });
 
-    // Switch between login and signup in modal
+    // Switch between login and signup in modal + delegated listeners for dynamic buttons
     document.addEventListener('click', function(e) {
         if (e.target.id === 'switchToSignup') {
             e.preventDefault();
@@ -90,6 +87,9 @@ export function initializeModals() {
         } else if (e.target.id === 'switchToLogin') {
             e.preventDefault();
             openModal(loginContent);
+        } else if (e.target.id === 'getStartedBtn') {
+            e.preventDefault();
+            openModal(signupContent);
         }
     });
 

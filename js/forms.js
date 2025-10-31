@@ -1,96 +1,102 @@
 // js/forms.js
-import { showSuccessMessage, showErrorMessage } from './notifications.js';
 
-// Form handling
-export function initializeFormHandling() {
-    // Main signup form
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-        signupForm.addEventListener('submit', handleFormSubmission);
-    }
-}
-
-// Handle main signup form
-function handleFormSubmission(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    
-    const formEl = e && e.target ? e.target : null;
-    if (!formEl) return;
-
-    const formData = new FormData(formEl);
-    const data = Object.fromEntries(formData);
+export async function handleLoginForm(event) {
+    const formData = new FormData(event.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
     
     // Basic validation
-    if (!validateForm(data)) {
+    if (!email || !password) {
+        alert('Please fill in all fields');
         return;
     }
     
-    // Simulate form submission
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
+    // Check if it's an RPI email
+    if (!email.includes('@rpi.edu')) {
+        alert('Please use your RPI email address');
+        return;
+    }
     
-    submitBtn.textContent = 'Creating Account...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-        showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-        try { formEl.reset(); } catch (err) {}
-        if (submitBtn) {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+    try {
+        const response = await fetch('../api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Login successful! Welcome to Resonance.');
+            
+            // Close modal
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Optionally redirect or update UI
+            // window.location.href = 'dashboard.html';
+        } else {
+            alert(data.error || 'Login failed. Please try again.');
         }
-    }, 2000);
+    } catch (error) {
+        alert('Connection error. Please try again later.');
+        console.error('Login error:', error);
+    }
 }
 
-// Handle login form
-export function handleLoginForm(e) {
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+export async function handleSignupModalForm(event) {
+    const formData = new FormData(event.target);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const interests = formData.get('interests');
     
-    if (!data.email || !data.password) {
-        showErrorMessage('Please fill in all fields');
+    // Basic validation
+    if (!name || !email || !password) {
+        alert('Please fill in all required fields');
         return;
     }
     
-    // Simulate login
-    showSuccessMessage('Login successful! Redirecting...');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
-}
-
-// Handle signup form in modal
-export function handleSignupModalForm(e) {
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    
-    if (!validateForm(data)) {
+    // Check if it's an RPI email
+    if (!email.includes('@rpi.edu')) {
+        alert('Please use your RPI email address');
         return;
     }
     
-    showSuccessMessage('Account created successfully! Welcome to RPISocial!');
-    setTimeout(() => {
-        document.getElementById('modal').style.display = 'none';
-    }, 1500);
+    try {
+        const response = await fetch('../api/register.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password, interests })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Account created successfully! Welcome to Resonance.');
+            
+            // Close modal
+            const modal = document.getElementById('modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Optionally redirect
+            // window.location.href = 'dashboard.html';
+        } else {
+            alert(data.error || 'Registration failed. Please try again.');
+        }
+    } catch (error) {
+        alert('Connection error. Please try again later.');
+        console.error('Registration error:', error);
+    }
 }
 
-// Form validation function
-function validateForm(data) {
-    if (!data.name || !data.email || !data.password) {
-        showErrorMessage('Please fill in all required fields');
-        return false;
-    }
-    
-    if (!data.email.includes('@rpi.edu')) {
-        showErrorMessage('Please use your RPI email address');
-        return false;
-    }
-    
-    if (data.password.length < 6) {
-        showErrorMessage('Password must be at least 6 characters long');
-        return false;
-    }
-    
-    return true;
-}

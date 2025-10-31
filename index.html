@@ -6,6 +6,7 @@
     <title>Resonance - Connect, Collaborate, Create</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Machina+BC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -13,7 +14,10 @@
     <header class="header">
         <nav class="nav">
             <div class="nav-brand">
-                <h1 class="logo">Resonance</h1>
+                <a href="#home" class="logo-link">
+                    <img src="resonance.png" alt="Resonance Logo" class="logo-image">
+                    <h1 class="logo">Resonance</h1>
+                </a>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
@@ -22,8 +26,8 @@
                 <li class="nav-item"><a href="#contact" class="nav-link">Connect</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="btn btn-outline" id="loginBtn">Login</button>
-                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+                <a href="pages/login.html" class="btn btn-outline" id="loginBtn">Log In</a>
+                <a href="pages/quiz.html" class="btn btn-primary">Sign Up</a>
             </div>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -33,175 +37,139 @@
         </nav>
     </header>
 
-    <!-- Hero section (inlined so file:// viewing works) -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h2 class="hero-title">Connect, Collaborate, Create</h2>
-                <p class="hero-description">
-                    Find like-minded musicians with ease.
-                    With a music-focused community, you can break free from group chats.
-                </p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary btn-large" id="getStartedBtn">Get Started</button>
-                    <button class="btn btn-outline btn-large" id="learnMoreBtn">Learn More</button>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="floating-cards">
-                    <div class="card card-1">
-                        <i class="fas fa-users"></i>
-                        <span>Groups</span>
-                    </div>
-                    <div class="card card-2">
-                        <i class="fas fa-lightbulb"></i>
-                        <span>Projects</span>
-                    </div>
-                    <div class="card card-3">
-                        <i class="fas fa-comments"></i>
-                        <span>Discussions</span>
-                    </div>
-                    <div class="card card-4">
-                        <i class="fas fa-guitar"></i>
-                        <span>Common Interests</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features section (inlined) -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose RPISocial?</h2>
-            <p class="section-subtitle">Transform your RPI experience with intelligent connections</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3>Smart Matching</h3>
-                    <p>AI-powered algorithm matches you with students who share your interests, academic goals, and availability.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <h3>Post & Find</h3>
-                    <p>Create posts for study groups, project collaborations, or social events. Find exactly what you're looking for.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <h3>Real-time Chat</h3>
-                    <p>Seamless communication with your matches. From quick study sessions to long-term project partnerships.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-calendar"></i>
-                    </div>
-                    <h3>Event Integration</h3>
-                    <p>Sync with your academic calendar and discover events happening around campus that match your interests.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About section (inlined) -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>The Problem We Solve</h2>
-                    <p>
-                        RPI is a constant vortex of hard courses, state-of-the-art research and large scale projects.
-                        However, in a community of thousands of intelligent individuals, even finding people who share
-                        the same interests with you
+    <div id="hero-section">
+        <!-- inlined from pages/hero.html -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2 class="hero-title">Connect, Collaborate, Create.</h2>
+                    <p class="hero-description">
+                        Find like-minded musicians with ease.
+                        Break free from group chats and join a musicician-run community!
                     </p>
-                    <p>
-                        Whether you're organizing a pop-up art sale, finding a partner to cram in
-                        some last-minute PHYS 1200 before an exam, or even finding people to participate in a basic 
-                        discussion or debate, can be harder than it seems.
-                    </p>
+                    <div class="hero-actions">
+                        <a href="pages/quiz.html" class="btn btn-primary btn-large" id="getStartedBtn">Get Started</a>
+                        <a href="#about" class="btn btn-outline btn-large" id="learnMoreBtn">Learn More</a>
+                    </div>
                 </div>
-                <div class="about-stats">
-                    <div class="stat">
-                        <h3>1000+</h3>
-                        <p>Active Students</p>
-                    </div>
-                    <div class="stat">
-                        <h3>500+</h3>
-                        <p>Study Groups</p>
-                    </div>
-                    <div class="stat">
-                        <h3>200+</h3>
-                        <p>Projects</p>
+                <div class="hero-visual">
+                    <div class="floating-cards">
+                        <div class="card card-1">
+                            <i class="fas fa-users"></i>
+                            <span>Groups</span>
+                        </div>
+                        <div class="card card-2">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Compose</span>
+                        </div>
+                        <div class="card card-3">
+                            <i class="fas fa-comments"></i>
+                            <span>Discussions</span>
+                        </div>
+                        <div class="card card-4">
+                            <i class="fas fa-guitar"></i>
+                            <span>Find a Group</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Contact section (inlined) -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Ready to Connect?</h2>
-            <p class="section-subtitle">Join RPISocial and transform your campus experience</p>
-            
-            <div class="contact-content">
-                <div class="contact-form">
-                    <form id="signupForm">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">RPI Email</label>
-                            <input type="email" id="email" name="email" placeholder="name@rpi.edu" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Choose a secure password" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="interests">Interests (Optional)</label>
-                            <input type="text" id="interests" name="interests" placeholder="e.g., Computer Science, Art, Research">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-large">Create Account</button>
-                    </form>
+        </section>
+    </div>
+    
+    <div id="quiz-section">
+        <!-- Quiz CTA section -->
+        <section id="quiz" class="contact">
+            <div class="container">
+                <h2 class="section-title">Discover your campus' music scene!</h2>
+                <p class="section-subtitle">Take our 2-minute quiz to find who you'll resonate with:</p>
+                <div class="quiz-cta">
+                    <a href="pages/quiz.html" class="btn btn-primary btn-large btn-glow" aria-label="Take Quiz">Take Quiz</a>
                 </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="about-section">
+        <!-- inlined from pages/about.html -->
+        <section id="about" class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>The Problem We Solve</h2>
+                        <p>
+                            At RPI, musicians are everywhere—performers, composers, and producers—but finding the right
+                            people to play with is harder than it should be. Announcements get buried in group chats,
+                            replies are inconsistent, and it’s tough to match skill level, genre, and availability.
+                        </p>
+                        <p>
+                            Resonance is a musician-run community that brings everything into one place: discover
+                            bandmates and ensembles, post or join practice sessions, coordinate rehearsals, and
+                            collaborate on projects and performances—so you spend less time searching and more time
+                            making music.
+                        </p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat">
+                            <h3>1000+</h3>
+                            <p>Active Students</p>
+                        </div>
+                        <div class="stat">
+                            <h3>500+</h3>
+                            <p>Practice Sessions</p>
+                        </div>
+                        <div class="stat">
+                            <h3>200+</h3>
+                            <p>Compositions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="features-section">
+        <!-- inlined from pages/features.html -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose Resonance?</h2>
+                <p class="section-subtitle">Transform your RPI experience with music-focused connections</p>
                 
-                <div class="contact-info">
-                    <h3>Get in Touch</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>contact@rpisocial.com</span>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Smart Matching</h3>
+                        <p>AI-powered algorithm matches you with students who share your music taste, goals, and availability.</p>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Rensselaer Polytechnic Institute</span>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Post & Find</h3>
+                        <p>Create posts for practice sessions, project collaborations, or performances. Find exactly what you're looking for.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Real-time Chat</h3>
+                        <p>Seamless communication with your matches. From quick practice sessions to long-term project partnerships.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>RPISocial</h3>
-                    <p>Connecting RPI students for meaningful collaborations and friendships.</p>
+                    <h3>Resonance</h3>
+                    <p>Break free from group chats, join a musicician-run community.</p>
                 </div>
                 
                 <div class="footer-section">
@@ -214,14 +182,6 @@
                     </ul>
                 </div>
                 
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#cookies">Cookie Policy</a></li>
-                    </ul>
-                </div>
                 
                 <div class="footer-section">
                     <h4>Follow Us</h4>
@@ -234,7 +194,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 RPISocial. All rights reserved.</p>
+                <p>&copy; 2025 Resonance. All rights reserved.</p>
             </div>
         </div>
     </footer>
