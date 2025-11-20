@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resonance Quiz</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <!-- External font links removed — using local fonts: Hyperiot, Nofex, Work Sans (SemiBold & Bold) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Override body background for quiz page */
+        body {
+            background: transparent !important;
+        }
+        
+        /* Music background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../assets/images/music.png') center/cover;
+            z-index: -1;
+            transition: filter 0.3s ease;
+        }
+        
+        [data-theme="dark"] body::before {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        
+        .quiz-wrapper { max-width: 720px; margin: 120px auto 60px; padding: 0 20px; position: relative; z-index: 1; }
+        .quiz-card { 
+            background: #f5f5f5; 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 20px 60px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+        }
+        
+        [data-theme="dark"] .quiz-card {
+            background: var(--card-bg);
+            box-shadow: 0 10px 30px var(--shadow-sm), 0 0 30px rgba(255, 138, 61, 0.5), 0 0 60px rgba(255, 138, 61, 0.3);
+        }
+        .quiz-steps { display: flex; gap: 8px; margin-bottom: 1rem; }
+        .quiz-step { height: 6px; background: var(--border-color-secondary); border-radius: 999px; flex: 1; overflow: hidden; }
+        .quiz-step.active { background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%); }
+        .quiz-title { font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .quiz-subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .quiz-slide { display: none; }
+        .quiz-slide.active { display: block; }
+        .strength { margin-top: 0.5rem; }
+        .strength-bar { height: 8px; background: var(--border-color-secondary); border-radius: 999px; overflow: hidden; }
+        .strength-bar > span { display: block; height: 100%; width: 0%; background: #eee; transition: width 0.3s ease, background-color 0.3s ease; }
+        .strength-label { font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.4rem; font-weight: 500; }
+        .actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end; }
+        .error-text { color: #b00020; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+        
+        /* Interests slide - matching home page styles */
+        .interests { display: grid; gap: 1.25rem; }
+        .orbit-area { 
+            position: relative; 
+            height: 380px; 
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%); 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+        .avatar { 
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px; 
+            height: 110px; 
+            border-radius: 50%; 
+            background: var(--bg-secondary); 
+            border: 3px solid #ffd2ae; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #9b2c1a; 
+            box-shadow: 0 10px 25px var(--shadow-sm);
+            z-index: 5;
+            transition: background-color 0.3s ease;
+        }
+        .avatar i { font-size: 42px; }
+        .orbit-container { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+        .orbit-chip { 
+            position: absolute; 
+            left: 50%; 
+            top: 50%; 
+            transform-origin: 0 0; 
+            white-space: nowrap; 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.9rem; 
+            font-weight: 600;
+            color: var(--text-primary);
+            box-shadow: 0 5px 20px var(--shadow-sm); 
+            pointer-events: auto; 
+            cursor: pointer; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            z-index: 10;
+        }
+        .orbit-chip:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 20;
+        }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(var(--radius)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
+        }
+        .orbiting { animation: orbit var(--speed, 10s) linear infinite; }
+        
+        .bank { display: flex; flex-direction: column; gap: 1rem; }
+        .bank-section { 
+            background: var(--bg-tertiary); 
+            border: 2px solid var(--border-color-secondary); 
+            border-radius: 16px; 
+            padding: 1.5rem; 
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .bank-section:hover {
+            border-color: #9b2c1a;
+        }
+        .bank-title { 
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700; 
+            color: #9b2c1a; 
+            font-size: 1.1rem; 
+            margin-bottom: 1rem; 
+        }
+        .chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .bank-chip { 
+            background: var(--bg-secondary); 
+            border: 2px solid var(--border-color-secondary); 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.9rem; 
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .bank-chip:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
+            border-color: #9b2c1a;
+        }
+        .bank-chip.selected { 
+            background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%); 
+            border-color: #9b2c1a; 
+            color: white; 
+        }
+        .flying-chip { 
+            position: fixed; 
+            z-index: 3000; 
+            background: var(--card-bg); 
+            border: 2px solid var(--border-color-secondary); 
+            border-radius: 8px; 
+            padding: 0.75rem 1rem; 
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            box-shadow: 0 10px 30px var(--shadow-md); 
+            pointer-events: none;
+        }
+        .bank-other { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+            margin-top: 1rem; 
+        }
+        .bank-other input { 
+            flex: 1;
+            height: auto;
+            padding: 0.75rem; 
+            border: 2px solid var(--border-color-secondary); 
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px; 
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .bank-other input:focus {
+            outline: none;
+            border-color: #9b2c1a;
+        }
+        .bank-other button { 
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s ease;
+        }
+        .password-toggle:hover {
+            color: #9b2c1a;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="../index.html" class="logo-link">
+                    <img src="../assets/images/resonance.png" alt="Resonance Logo" class="logo-image">
+                    <h1 class="logo">Resonance</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="../index.html#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="../index.html#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="../index.html#quiz" class="nav-link">Connect</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline" id="loginBtn">Log In</a>
+                <a href="quiz.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon theme-icon"></i>
+            </button>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="quiz-wrapper">
+        <div class="quiz-card">
+            <div class="quiz-steps">
+                <div class="quiz-step active"></div>
+                <div class="quiz-step"></div>
+                <div class="quiz-step"></div>
+            </div>
+            <h2 class="quiz-title">Create your profile</h2>
+            <p class="quiz-subtitle">Start by telling us who you are. This helps matches feel more personal.</p>
+
+            <!-- Slide 1: Account basics -->
+            <section class="quiz-slide active" id="slide-1">
+                <form id="accountForm" novalidate>
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                         <div class="error-text" id="nameError">Please enter your full name.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">RPI Email</label>
+                        <input type="email" id="email" name="email" placeholder="example@rpi.edu" required>
+                         <div class="error-text" id="emailError">Please use a valid RPI email (ends with @rpi.edu).</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Choose a secure password" required>
+                            <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                        <div class="strength">
+                            <div class="strength-bar"><span id="strengthFill"></span></div>
+                            <div class="strength-label" id="strengthLabel">Strength: —</div>
+                        </div>
+                         <div class="error-text" id="passwordError">Password must be at least 8 characters.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirm" name="confirm" placeholder="Re-enter your password" required>
+                            <button type="button" class="password-toggle" id="toggleConfirm" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye" id="toggleConfirmIcon"></i>
+                            </button>
+                        </div>
+                        <div class="error-text" id="confirmError">Passwords do not match.</div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn btn-primary btn-large" id="nextBtn">Next</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Slide 2 placeholder (interests) -->
+            <section class="quiz-slide" id="slide-2">
+                <div id="registrationMessage" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; text-align: center;"></div>
+                <div class="interests">
+                    <div class="orbit-area">
+                        <div class="avatar" id="orbitCenter" aria-label="Interests center"><i class="fas fa-user"></i></div>
+                        <div class="orbit-container" id="orbitContainer"></div>
+                    </div>
+                    <div class="bank">
+                        <div class="bank-section" data-cat="genres">
+                            <div class="bank-title">Genres</div>
+                            <div class="chips" id="bank-genres">
+                                <button type="button" class="bank-chip" data-cat="genres">Pop</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Rock</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Jazz</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Classical</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Hip-Hop</button>
+                                <button type="button" class="bank-chip" data-cat="genres">EDM</button>
+                                <button type="button" class="bank-chip" data-cat="genres">R&B</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Indie</button>
+                                <button type="button" class="bank-chip" data-cat="genres">Metal</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-genres" placeholder="Other genre">
+                                <button type="button" class="btn btn-outline" data-add="genres">Add</button>
+                            </div>
+                        </div>
+                        <div class="bank-section" data-cat="instruments">
+                            <div class="bank-title">Instruments</div>
+                            <div class="chips" id="bank-instruments">
+                                <button type="button" class="bank-chip" data-cat="instruments">Guitar</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Bass</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Piano</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Drums</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Vocals</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Violin</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Saxophone</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Trumpet</button>
+                                <button type="button" class="bank-chip" data-cat="instruments">Production</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-instruments" placeholder="Other instrument">
+                                <button type="button" class="btn btn-outline" data-add="instruments">Add</button>
+                            </div>
+                        </div>
+                        <div class="bank-section" data-cat="availability">
+                            <div class="bank-title">Availability</div>
+                            <div class="chips" id="bank-availability">
+                                <button type="button" class="bank-chip" data-cat="availability">Mornings</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Afternoons</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Evenings</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Weekdays</button>
+                                <button type="button" class="bank-chip" data-cat="availability">Weekends</button>
+                            </div>
+                            <div class="bank-other">
+                                <input type="text" id="other-availability" placeholder="Other availability">
+                                <button type="button" class="btn btn-outline" data-add="availability">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="button" class="btn btn-primary btn-large" id="backBtn">Back</button>
+                    <button type="button" class="btn btn-primary btn-large" id="submitBtn">Create Account</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module">
+        import { checkSession } from '../assets/js/auth.js';
+
+        // Check if user is already logged in
+        if (checkSession()) {
+            // Already logged in, redirect to dashboard
+            window.location.href = '../dashboard/index.html';
+        }
+        
+        // Simple password strength evaluation
+        function evaluateStrength(password) {
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            return score; // 0-5
+        }
+
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const pw = document.getElementById('password');
+            const confirmPw = document.getElementById('confirm');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthLabel = document.getElementById('strengthLabel');
+            const confirmError = document.getElementById('confirmError');
+            const nextBtn = document.getElementById('nextBtn');
+
+            function updateStrength() {
+                const val = pw.value || '';
+                const score = evaluateStrength(val);
+                const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+                strengthFill.style.width = widths[score];
+                let color = '#eee';
+                let label = '—';
+                if (score <= 1) { color = '#dc3545'; label = 'Very Weak'; }      // Red
+                else if (score === 2) { color = '#ff8c42'; label = 'Weak'; }     // Orange
+                else if (score === 3) { color = '#ffc107'; label = 'Fair'; }     // Yellow
+                else if (score === 4) { color = '#8bc34a'; label = 'Good'; }     // Light Green
+                else if (score >= 5) { color = '#28a745'; label = 'Strong'; }    // Green
+                strengthFill.style.background = color;
+                strengthLabel.textContent = 'Strength: ' + label;
+            }
+
+            pw.addEventListener('input', updateStrength);
+            updateStrength(); // Initial call
+
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+            const toggleConfirm = document.getElementById('toggleConfirm');
+            const toggleConfirmIcon = document.getElementById('toggleConfirmIcon');
+
+            togglePassword.addEventListener('click', function() {
+                const type = pw.type === 'password' ? 'text' : 'password';
+                pw.type = type;
+                togglePasswordIcon.classList.toggle('fa-eye');
+                togglePasswordIcon.classList.toggle('fa-eye-slash');
+            });
+
+            toggleConfirm.addEventListener('click', function() {
+                const type = confirmPw.type === 'password' ? 'text' : 'password';
+                confirmPw.type = type;
+                toggleConfirmIcon.classList.toggle('fa-eye');
+                toggleConfirmIcon.classList.toggle('fa-eye-slash');
+            });
+
+            function validateStep1() {
+                // Reset errors
+                const nameEl = document.getElementById('name');
+                const emailEl = document.getElementById('email');
+                const nameError = document.getElementById('nameError');
+                const emailError = document.getElementById('emailError');
+                const passwordError = document.getElementById('passwordError');
+
+                nameError.style.display = 'none';
+                emailError.style.display = 'none';
+                passwordError.style.display = 'none';
+                confirmError.style.display = 'none';
+
+                let firstInvalid = null;
+
+                const name = nameEl.value.trim();
+                if (!name) {
+                    nameError.style.display = 'block';
+                    firstInvalid = firstInvalid || nameEl;
+                }
+
+                const email = emailEl.value.trim();
+                const emailValid = /.+@rpi\.edu$/i.test(email);
+                if (!emailValid) {
+                    emailError.style.display = 'block';
+                    firstInvalid = firstInvalid || emailEl;
+                }
+
+                const password = pw.value;
+                if (password.length < 8) {
+                    passwordError.style.display = 'block';
+                    firstInvalid = firstInvalid || pw;
+                }
+
+                const confirm = confirmPw.value;
+                if (password && confirm && password !== confirm) {
+                    confirmError.style.display = 'block';
+                    firstInvalid = firstInvalid || confirmPw;
+                }
+
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    return false;
+                }
+                return true;
+            }
+
+            nextBtn.addEventListener('click', function() {
+                if (!validateStep1()) return;
+                document.getElementById('slide-1').classList.remove('active');
+                document.getElementById('slide-2').classList.add('active');
+                const steps = document.querySelectorAll('.quiz-step');
+                steps[1].classList.add('active');
+                document.querySelector('.quiz-title').textContent = 'Tell us what you like';
+                document.querySelector('.quiz-subtitle').textContent = 'Pick your favorite genres, what instruments you play, and when you\'re free to play.';
+            });
+
+            // Enter key handler for advancing through quiz
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const slide1Active = document.getElementById('slide-1').classList.contains('active');
+                    const slide2Active = document.getElementById('slide-2').classList.contains('active');
+                    
+                    // Don't trigger if user is adding custom items
+                    const activeElement = document.activeElement;
+                    if (activeElement && (activeElement.id.startsWith('other-'))) {
+                        return; // Let the "Add" button handle it
+                    }
+                    
+                    if (slide1Active) {
+                        e.preventDefault();
+                        nextBtn.click();
+                    } else if (slide2Active) {
+                        e.preventDefault();
+                        const submitBtn = document.getElementById('submitBtn');
+                        if (submitBtn && !submitBtn.disabled) {
+                            submitBtn.click();
+                        }
+                    }
+                }
+            });
+
+            // Back button to return to slide 1
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    document.getElementById('slide-2').classList.remove('active');
+                    document.getElementById('slide-1').classList.add('active');
+                    const steps = document.querySelectorAll('.quiz-step');
+                    steps[1].classList.remove('active');
+                    document.querySelector('.quiz-title').textContent = 'Create your profile';
+                    document.querySelector('.quiz-subtitle').textContent = 'Start by telling us who you are. This helps matches feel more personal.';
+                });
+            }
+
+            // Submit button to register account
+            const submitBtn = document.getElementById('submitBtn');
+            const registrationMessage = document.getElementById('registrationMessage');
+
+            function showRegistrationMessage(message, isError = false) {
+                registrationMessage.textContent = message;
+                registrationMessage.style.display = 'block';
+                registrationMessage.style.backgroundColor = isError ? '#fee' : '#efe';
+                registrationMessage.style.color = isError ? '#c33' : '#2a7d2a';
+                registrationMessage.style.border = isError ? '1px solid #fcc' : '1px solid #cfc';
+            }
+
+            if (submitBtn) {
+                submitBtn.addEventListener('click', async function() {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Creating Account...';
+
+                    try {
+                        const name = document.getElementById('name').value.trim();
+                        const email = document.getElementById('email').value.trim();
+                        const password = document.getElementById('password').value;
+                        
+                        // Collect and format all selected interests
+                        const interests = orbitChips.map(c => ({
+                            category: c.category || 'general',
+                            label: c.label
+                        }));
+
+                        // Log the data being sent (without password)
+                        console.log('Sending registration data:', {
+                            name, 
+                            email, 
+                            interests,
+                            passwordLength: password.length
+                        });
+
+                        const response = await fetch('../api/register.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 
+                                name, 
+                                email, 
+                                password, 
+                                interests 
+                            })
+                        });
+
+                        // Log the raw response
+                        console.log('Response status:', response.status);
+                        const responseText = await response.text();
+                        console.log('Response text:', responseText);
+
+                        let data;
+                        try {
+                            data = JSON.parse(responseText);
+                        } catch (e) {
+                            console.error('Failed to parse JSON:', e);
+                            throw new Error('Invalid server response');
+                        }
+
+                        if (!response.ok || !data.success) {
+                            throw new Error(data.error || 'Registration failed');
+                        }
+
+                        // Store session token
+                        localStorage.setItem('session_token', data.session_token);
+                        localStorage.setItem('session_expiry', data.expires_at);
+                        
+                        showRegistrationMessage('Account created successfully! Taking you to your feed...');
+                        setTimeout(() => {
+                            window.location.href = '../dashboard/index.html';
+                        }, 1500);
+                    } catch (error) {
+                        console.error('Registration error:', error);
+                        showRegistrationMessage('Connection error. Please try again.', true);
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Create Account';
+                    }
+                });
+            }
+
+            // Clear specific errors on input
+            document.getElementById('name').addEventListener('input', () => {
+                document.getElementById('nameError').style.display = 'none';
+            });
+            document.getElementById('email').addEventListener('input', () => {
+                document.getElementById('emailError').style.display = 'none';
+            });
+            pw.addEventListener('input', () => {
+                document.getElementById('passwordError').style.display = 'none';
+            });
+            confirmPw.addEventListener('input', () => {
+                document.getElementById('confirmError').style.display = 'none';
+            });
+
+            // Orbiting chips logic
+            const orbitContainer = document.getElementById('orbitContainer');
+            const center = document.getElementById('orbitCenter');
+            const bank = document.querySelector('.bank');
+
+            const orbitChips = [];
+            const orbitRings = [100, 130, 160]; // Increased minimum radius to avoid overlap with 110px user icon
+
+            function redistributeChips() {
+                // Recalculate positions to evenly distribute chips in circles
+                orbitChips.forEach((item, index) => {
+                    const ring = orbitRings[Math.floor(index / 8)] || orbitRings[orbitRings.length - 1];
+                    const chipsInRing = Math.min(8, orbitChips.length - Math.floor(index / 8) * 8);
+                    const angleStep = 360 / chipsInRing;
+                    const angle = (index % 8) * angleStep;
+                    
+                    item.ring = ring;
+                    item.angle = angle;
+                    item.chip.style.setProperty('--radius', ring + 'px');
+                    item.chip.style.setProperty('--speed', (10 + (index % 8)) + 's');
+                    item.chip.style.transform = `rotate(${angle}deg) translateX(${ring}px) rotate(${-angle}deg)`;
+                });
+            }
+
+            function placeOrbitChip(label, category) {
+                const chip = document.createElement('div');
+                chip.className = 'orbit-chip orbiting';
+                chip.textContent = label;
+                chip.dataset.cat = category || '';
+                orbitContainer.appendChild(chip);
+                orbitChips.push({ chip, ring: 0, angle: 0, label, category });
+                redistributeChips();
+            }
+
+            function animateChipToOrbit(buttonEl) {
+                if (buttonEl.classList.contains('selected')) return;
+                buttonEl.classList.add('selected');
+
+                const rect = buttonEl.getBoundingClientRect();
+                const fly = document.createElement('div');
+                fly.className = 'flying-chip';
+                fly.textContent = buttonEl.textContent;
+                fly.style.left = rect.left + 'px';
+                fly.style.top = rect.top + 'px';
+                document.body.appendChild(fly);
+
+                const centerRect = center.getBoundingClientRect();
+                const targetX = centerRect.left + centerRect.width / 2;
+                const targetY = centerRect.top + centerRect.height / 2;
+
+                const duration = 450;
+                const start = performance.now();
+                const startX = rect.left;
+                const startY = rect.top;
+
+                function step(now) {
+                    const t = Math.min(1, (now - start) / duration);
+                    const e = 1 - Math.pow(1 - t, 3);
+                    const x = startX + (targetX - startX) * e;
+                    const y = startY + (targetY - startY) * e;
+                    fly.style.left = x + 'px';
+                    fly.style.top = y + 'px';
+                    if (t < 1) requestAnimationFrame(step);
+                    else {
+                        fly.remove();
+                        placeOrbitChip(buttonEl.textContent, buttonEl.dataset.cat || '');
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            function animateChipFromOrbit(orbitChipEl, targetBankChip) {
+                // Get current position of orbit chip
+                const orbitRect = orbitChipEl.getBoundingClientRect();
+                
+                // Create flying chip
+                const fly = document.createElement('div');
+                fly.className = 'flying-chip';
+                fly.textContent = orbitChipEl.textContent;
+                fly.style.left = orbitRect.left + 'px';
+                fly.style.top = orbitRect.top + 'px';
+                document.body.appendChild(fly);
+
+                // Get target position
+                const targetRect = targetBankChip.getBoundingClientRect();
+                const targetX = targetRect.left;
+                const targetY = targetRect.top;
+
+                const duration = 450;
+                const start = performance.now();
+                const startX = orbitRect.left;
+                const startY = orbitRect.top;
+
+                // Remove orbit chip immediately
+                const label = orbitChipEl.textContent;
+                const idx = orbitChips.findIndex(c => c.label === label);
+                if (idx !== -1) {
+                    orbitChips.splice(idx, 1);
+                    redistributeChips(); // Redistribute remaining chips
+                }
+                orbitChipEl.remove();
+
+                function step(now) {
+                    const t = Math.min(1, (now - start) / duration);
+                    const e = 1 - Math.pow(1 - t, 3); // Ease out cubic
+                    const x = startX + (targetX - startX) * e;
+                    const y = startY + (targetY - startY) * e;
+                    fly.style.left = x + 'px';
+                    fly.style.top = y + 'px';
+                    if (t < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        fly.remove();
+                        targetBankChip.classList.remove('selected');
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            // Toggle from bank: select -> orbit, or if already selected, remove selection and corresponding orbiting chip
+            if (bank) {
+                bank.addEventListener('click', function(e) {
+                    const chip = e.target.closest('.bank-chip');
+                    if (!chip) return;
+                    if (!chip.classList.contains('selected')) {
+                        animateChipToOrbit(chip);
+                    } else {
+                        // Find and animate the orbiting chip back
+                        const idx = orbitChips.findIndex(c => c.label === chip.textContent);
+                        if (idx !== -1) {
+                            animateChipFromOrbit(orbitChips[idx].chip, chip);
+                        }
+                    }
+                });
+            }
+
+            // Clicking an orbiting chip removes it and unselects corresponding bank chip
+            orbitContainer.addEventListener('click', function(e) {
+                const oc = e.target.closest('.orbit-chip');
+                if (!oc) return;
+                const label = oc.textContent;
+                const bankChip = Array.from(document.querySelectorAll('.bank-chip.selected')).find(b => b.textContent === label);
+                if (bankChip) {
+                    animateChipFromOrbit(oc, bankChip);
+                }
+            });
+
+        // Add custom 'Other' entries
+        function addCustomChip(category) {
+            const input = document.getElementById('other-' + category);
+            const value = (input.value || '').trim();
+            if (!value) return;
+
+            const container = document.getElementById('bank-' + category);
+            const newChip = document.createElement('button');
+            newChip.type = 'button';
+            newChip.className = 'bank-chip';
+            newChip.dataset.cat = category;
+            newChip.textContent = value;
+            container.appendChild(newChip);
+            input.value = '';
+            // animate it immediately to orbit
+            animateChipToOrbit(newChip);
+        }
+
+        // Add button click handlers for custom entries
+        document.querySelectorAll('[data-add]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cat = this.getAttribute('data-add');
+                addCustomChip(cat);
+            });
+        });
+
+        // Add Enter key support for custom input fields
+        document.querySelectorAll('[id^="other-"]').forEach(input => {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const category = this.id.replace('other-', '');
+                    addCustomChip(category);
+                }
+            });
+        });
+
+        }); // End DOMContentLoaded
+    </script>
+    <script src="../assets/js/theme.js"></script>
+</body>
+</html>
+

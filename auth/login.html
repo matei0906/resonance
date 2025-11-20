@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - Resonance</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <!-- External font links removed — using local fonts: Hyperiot, Nofex, Work Sans (SemiBold & Bold) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Override body background for login page */
+        body {
+            background: transparent !important;
+        }
+        
+        /* Music background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../assets/images/music.png') center/cover;
+            z-index: -1;
+            transition: filter 0.3s ease;
+        }
+        
+        [data-theme="dark"] body::before {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        
+        #backToHomeBtn:hover {
+            background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(255, 138, 61, 0.35);
+        }
+        
+        /* Login card styling */
+        .login-card {
+            background: #f5f5f5 !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 20px 60px rgba(0, 0, 0, 0.1) !important;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        
+        [data-theme="dark"] .login-card {
+            background: var(--card-bg) !important;
+            box-shadow: 0 10px 30px var(--shadow-sm), 0 0 30px rgba(255, 138, 61, 0.5), 0 0 60px rgba(255, 138, 61, 0.3) !important;
+        }
+        
+        /* Sign Up button styling */
+        .signup-btn {
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .signup-btn:hover {
+            background: linear-gradient(135deg, #9b2c1a 0%, #ff8a3d 100%) !important;
+            color: white !important;
+            border-color: transparent !important;
+            box-shadow: 0 0 20px rgba(255, 138, 61, 0.6), 0 0 40px rgba(255, 138, 61, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* Password toggle button */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s ease;
+        }
+        .password-toggle:hover {
+            color: #9b2c1a;
+        }
+        
+        .forgot-password-link:hover {
+            color: #9b2c1a !important;
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="../index.html" class="logo-link">
+                    <img src="../assets/images/resonance.png" alt="Resonance Logo" class="logo-image">
+                    <h1 class="logo">Resonance</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="../index.html#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="../index.html#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="../index.html#quiz" class="nav-link">Connect</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../index.html" class="btn btn-outline" id="backToHomeBtn">Back to Home</a>
+                <a href="quiz.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon theme-icon"></i>
+            </button>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding-top: 120px; min-height: 100vh; position: relative; z-index: 1;">
+        <div class="container">
+            <div class="login-card" style="max-width: 400px; margin: 4rem auto; padding: 3rem; border-radius: 16px;">
+                <h2 style="font-family: 'Hyperiot', sans-serif; font-size: 2.5rem; font-weight: 400; text-align: center; margin-bottom: 2rem; color: var(--text-primary); letter-spacing: 0.1em; text-transform: uppercase;">Log In</h2>
+                
+                <div id="loginMessage" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; text-align: center;"></div>
+                
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 0.5rem;">
+                        <a href="forgot-password.html" class="forgot-password-link" style="color: #c93a1f; text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; font-family: 'Work Sans', sans-serif; font-weight: 600;">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large" id="loginBtn" style="width: 100%; margin-top: 1rem;">Log In</button>
+                </form>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Don't have an account?</p>
+                    <a href="quiz.html" class="btn btn-outline signup-btn">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { checkSession } from '../assets/js/auth.js';
+
+        // Check if user is already logged in
+        if (checkSession()) {
+            // Already logged in, redirect to dashboard
+            window.location.href = '../dashboard/index.php';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginMessage = document.getElementById('loginMessage');
+
+        function showMessage(message, isError = false) {
+            loginMessage.textContent = message;
+            loginMessage.style.display = 'block';
+            loginMessage.style.backgroundColor = isError ? '#fee' : '#efe';
+            loginMessage.style.color = isError ? '#c33' : '#2a7d2a';
+            loginMessage.style.border = isError ? '1px solid #fcc' : '1px solid #cfc';
+        }
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                togglePasswordIcon.classList.toggle('fa-eye');
+                togglePasswordIcon.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(loginForm);
+            const email = formData.get('email');
+            const password = formData.get('password');
+            
+            if (!email || !password) {
+                showMessage('Please fill in all fields', true);
+                return;
+            }
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            try {
+                const response = await fetch('../api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                // Check if response is ok before parsing
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Server error' }));
+                    showMessage(errorData.error || `Login failed (${response.status})`, true);
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Log In';
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('Login successful, storing session:', data);
+                    localStorage.setItem('session_token', data.session_token);
+                    localStorage.setItem('session_expiry', data.expires_at);
+                    console.log('Stored in localStorage:', {
+                        token: localStorage.getItem('session_token'),
+                        expiry: localStorage.getItem('session_expiry')
+                    });
+                    showMessage('Login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = '../dashboard/index.php';
+                    }, 1500);
+                } else {
+                    showMessage(data.error || 'Login failed', true);
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Log In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Connection error. Please try again.', true);
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Log In';
+            }
+        });
+    </script>
+    <!-- Authentication Logic -->
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/theme.js"></script>
+    <script>
+        async function login() {
+            const email = document.getElementById("email").value;
+            const pass = document.getElementById("password").value;
+
+            const res = await fetch("/api/auth/login.php", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email: email, password: pass})
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                window.location.href = "/dashboard/index.php";
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>
