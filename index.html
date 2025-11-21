@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resonance - Home</title>
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="#home" class="logo-link">
+                    <img src="./assets/images/resonance.png" alt="Resonance Logo" class="logo-image">
+                    <h1 class="logo">Resonance</h1>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="#features" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="#quiz" class="nav-link">Connect</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="./auth/login.html" class="btn btn-outline" id="loginBtn">Log In</a>
+                <a href="./auth/quiz.html" class="btn btn-primary" id="signupBtn">Sign Up</a>
+            </div>
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon theme-icon"></i>
+            </button>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <div id="hero-section">
+        <!-- inlined from pages/hero.html -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2 class="hero-title">Connect, Collaborate, Create.</h2>
+                    <p class="hero-description ws-regular">
+                        Find like-minded musicians with ease.<br>
+                        Break free from group chats and join a musician-run community!
+                    </p>
+                    <div class="hero-actions">
+                        <a href="./auth/quiz.html" class="btn btn-primary btn-large" id="getStartedBtn">Get Started</a>
+                        <a href="#about" class="btn btn-outline btn-large" id="learnMoreBtn">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="floating-cards">
+                        <div class="card card-1">
+                            <i class="fas fa-users"></i>
+                            <span>Groups</span>
+                        </div>
+                        <div class="card card-2">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Compose</span>
+                        </div>
+                        <div class="card card-3">
+                            <i class="fas fa-comments"></i>
+                            <span>Discussions</span>
+                        </div>
+                        <div class="card card-4">
+                            <i class="fas fa-guitar"></i>
+                            <span>Find a Group</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="quiz-section">
+        <!-- Quiz CTA section -->
+        <section id="quiz" class="contact">
+            <div class="container">
+                <h2 class="section-title">Discover your campus' music scene!</h2>
+                <p class="section-subtitle ws-regular">Take our 2-minute quiz to find who you'll resonate with:</p>
+                <div class="quiz-cta">
+                    <a href="./auth/quiz.html" class="btn btn-primary btn-large btn-glow" aria-label="Take Quiz">Take Quiz</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="about-section">
+        <!-- inlined from pages/about.html -->
+        <section id="about" class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text slide-in-left">
+                            <h2>The Problem We Solve</h2>
+                            <p class="ws-regular">
+                                At RPI, there are musicians everywhere: performers, composers, and producers, 
+                                but it's harder to find the right people to play with than it looks. Group chats 
+                                bury announcements, and replies are unpredictable, making it difficult to match the skill level, genre and availability.
+
+
+                            </p>
+                            <p class="ws-regular">
+                                Resonance is a community of musicians who make it all happen in one space: find bandmates
+                                and ensembles, post or join practice sessions, organize rehearsals, and work on projects and performances.<br>
+                                Spend less time searching, and more time making music!
+                            </p>
+                        </div>
+                    <div class="about-stats">
+                        <div class="stat slide-in-right">
+                            <h3>100+</h3>
+                            <p>Active Students</p>
+                        </div>
+                        <div class="stat slide-in-right">
+                            <h3>50+</h3>
+                            <p>Practice Sessions</p>
+                        </div>
+                        <div class="stat slide-in-right">
+                            <h3>200+</h3>
+                            <p>Compositions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="features-section">
+        <!-- inlined from pages/features.html -->
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose Resonance?</h2>
+                <p class="section-subtitle ws-regular">Transform your RPI experience with music-focused connections</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Smart Matching</h3>
+                        <p class="ws-regular">AI-powered algorithm matches you with students who share your music taste, goals, and availability.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Post & Find</h3>
+                        <p class="ws-regular">Create posts for practice sessions, project collaborations, or performances. Find exactly what you're looking for.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Real-time Chat</h3>
+                        <p class="ws-regular">Seamless communication with your matches. From quick practice sessions to long-term project partnerships.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                    <div class="footer-section">
+                    <h3>Resonance</h3>
+                    <p class="ws-regular">Break free from group chats,<br>join a musician-run community.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="./auth/quiz.html">Create an Account</a></li>
+                        <li><a href="./auth/login.html">Log In</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#home">Home</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/matei0906/" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/matei-stoica-698aa4348/" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Resonance. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Login/Signup -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    <script>
+        window.onload = async () => {
+            const res = await fetch("/api/auth/session.php");
+            const data = await res.json();
+
+            if (!data.logged_in) {
+                window.location.href = "/auth/login.html";
+            }
+        };
+    </script>
+    <script src="./assets/js/theme.js"></script>
+    <script type="module">
+        import { checkSession, logout } from './assets/js/auth.js';
+        
+        // Check if user is already logged in and update buttons
+        if (checkSession()) {
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            
+            // Change Log In to Dashboard
+            if (loginBtn) {
+                loginBtn.textContent = 'Dashboard';
+                loginBtn.href = './dashboard/index.html';
+            }
+            
+            // Change Sign Up to Log Out
+            if (signupBtn) {
+                signupBtn.textContent = 'Log Out';
+                signupBtn.href = '#';
+                signupBtn.classList.remove('btn-primary');
+                signupBtn.classList.add('btn-outline');
+                signupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        }
+    </script>
+    <script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
