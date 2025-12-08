@@ -4,9 +4,9 @@
 
 ## What is Resonance?
 
-Resonance is a web application created to solve a problem that has been frustrating musicians at RPI and that is: finding someone to jam with is much harder than it seems.
+Resonance is a web application created to solve a problem that musicians at RPI face often. It's that finding someone to jam with is much harder than it seems.
 
-At RPI, there are musicians everywhere: performers, composers, and producers, but it's harder to find the right people to play with than it looks. Group chats bury announcements, and replies are unpredictable, making it difficult to match the skill level, genre and availability.
+At RPI, there are musicians everywhere: performers, composers, and producers, but it's harder to find the right people to play with than it looks. Group chats bury announcements, replies are unpredictable, and it's incredibly difficult to match skill levels, common genres and availability.
 
 Resonance is a community of musicians who make it all happen in one space: find bandmates and ensembles, post or join practice sessions, organize rehearsals, and work on projects and performances.
 Spend less time searching, and more time making music!
@@ -23,14 +23,14 @@ Spend less time searching, and more time making music!
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Styling**: Custom CSS with modern animations and responsive design
-- **Fonts**: Hyperiot (custom display font) + Inter (body text)
+- **Fonts**: Hyperiot, Nofex, Work Sans
 - **Icons**: Font Awesome
-- **Background**: Animated GIF from Giphy
+- **Background**: Animated GIF from Giphy and Music-inspired doodle background
 - **Architecture**: Modular JavaScript with ES6 imports
 
 ## Design Philosophy:
 
-I wanted this to feel like a modern music platform, not just another boring website. So I went with:
+WE wanted this to feel like a modern music platform, not just another boring website. So we went with:
 
 - **Vibrant colors**: Orange gradients that pop and feel energetic
 - **Custom typography**: Hyperiot font for that futuristic, music-tech vibe

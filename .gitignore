@@ -1,4 +1,12 @@
-api/**/*.php
 /**/*.ini
 /**/*.md
 !README.md
+/**/*.json
+/**/*.lock
+vendor/
+
+# Sensitive config files
+config.local.js
+**/config.local.js
+config.local.php
+**/config.local.php
