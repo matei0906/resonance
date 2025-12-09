@@ -1056,6 +1056,353 @@
         .delete-confirm-btn.delete:hover {
             background: #c82333;
         }
+
+        /* Comment Section Styles */
+        .comment-section {
+            display: none;
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .comment-section.show {
+            display: block;
+        }
+
+        .comment-input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment-input-wrapper .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .comment-input-wrapper .comment-avatar i {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .comment-input-container {
+            flex: 1;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comment-input:focus {
+            border-color: #9b2c1a;
+        }
+
+        .comment-submit-btn {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.85rem;
+        }
+
+        .comment-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .comment {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+        }
+
+        .comment + .comment {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .comment-avatar i {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .comment-body {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .comment-content {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .comment-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .comment-action-btn:hover {
+            color: #9b2c1a;
+        }
+
+        /* Comment menu (3 dots) */
+        .comment-menu {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .comment-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .comment-menu-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .comment-menu-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-sm);
+            min-width: 120px;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .comment-menu-dropdown.show {
+            display: block;
+        }
+
+        .comment-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .comment-menu-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .comment-menu-item.delete {
+            color: #e74c3c;
+        }
+
+        .comment-menu-item.delete:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Reply styles with thread lines */
+        .comment-replies {
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        /* Vertical thread line */
+        .comment-replies::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0.75rem;
+            width: 2px;
+            background: var(--border-color);
+            border-radius: 1px;
+        }
+
+        .comment-replies .comment {
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        /* Horizontal connector to avatar */
+        .comment-replies .comment::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1rem;
+            width: 1rem;
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        /* Hide line after last reply */
+        .comment-replies .comment:last-child::after {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1rem;
+            bottom: 0;
+            width: 2px;
+            background: var(--card-bg);
+        }
+
+        .comment-replies .comment-avatar {
+            width: 26px;
+            height: 26px;
+        }
+
+        .comment-replies .comment-avatar i {
+            font-size: 0.75rem;
+        }
+
+        /* Nested replies */
+        .comment-replies .comment-replies {
+            margin-left: 0.5rem;
+        }
+
+        .reply-input-wrapper {
+            display: none;
+            margin-top: 0.5rem;
+            margin-left: 2.5rem;
+        }
+
+        .reply-input-wrapper.show {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reply-input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .reply-input:focus {
+            border-color: #9b2c1a;
+        }
+
+        .reply-submit-btn {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .reply-cancel-btn {
+            padding: 0.5rem 0.75rem;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background 0.2s;
+        }
+
+        .reply-cancel-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 1rem 0;
+        }
+
+        .comment-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .loading-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 1rem;
+        }
+
+        .comment-btn {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1092,9 +1439,6 @@
             <textarea id="postContent" placeholder="Share your musical thoughts, find bandmates, or schedule jam sessions..."></textarea>
             <div class="create-post-actions">
                 <div class="post-attachments">
-                    <button type="button" class="attachment-btn" id="photoBtn" title="Upload Photo">
-                        <i class="fas fa-image"></i>
-                    </button>
                     <div class="music-search-container">
                         <button type="button" class="attachment-btn" id="musicBtn" title="Add Music">
                             <i class="fas fa-music"></i>
@@ -1213,6 +1557,19 @@
         </div>
     </div>
 
+    <!-- Comment Delete Confirmation Modal -->
+    <div class="delete-confirm-modal" id="deleteCommentModal">
+        <div class="delete-confirm-content">
+            <button class="delete-confirm-close" id="deleteCommentClose">&times;</button>
+            <div class="delete-confirm-title">Delete Comment</div>
+            <div class="delete-confirm-message">Are you sure you want to delete this comment? Any replies will also be deleted.</div>
+            <div class="delete-confirm-actions">
+                <button class="delete-confirm-btn delete" id="confirmDeleteCommentBtn">Yes, delete</button>
+                <button class="delete-confirm-btn cancel" id="cancelDeleteCommentBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Calendar View Modal -->
     <div class="calendar-view-modal" id="calendarViewModal">
         <div class="calendar-view-content">
@@ -1234,7 +1591,6 @@
 
     <!-- Scripts -->
     <script src="config.local.js"></script>
-    <script src="../../assets/js/auth.js"></script>
     <script type="module">
         import { checkSession, requireLogin, logout } from '../../assets/js/auth.js';
 
@@ -1734,7 +2090,9 @@
                         const userLiked = post.user_liked || false;
                         const heartIcon = userLiked ? 'fas fa-heart' : 'far fa-heart';
                         const likedClass = userLiked ? 'liked' : '';
-                        const likeText = likeCount > 0 ? `${likeCount} Like${likeCount !== 1 ? 's' : ''}` : 'Like';
+                        const likeText = likeCount > 0 ? likeCount : '';
+                        const commentCount = post.comment_count || 0;
+                        const commentText = commentCount > 0 ? commentCount : '';
                         
                         return `
                         <article class="post" data-post-id="${post.id}" data-user-id="${post.user_id}">
@@ -1767,13 +2125,27 @@
                                     <i class="${heartIcon}"></i>
                                     <span class="like-text">${likeText}</span>
                                 </div>
-                                <div class="post-action">
+                                <div class="post-action comment-btn" data-post-id="${post.id}">
                                     <i class="far fa-comment"></i>
-                                    <span>Comment</span>
+                                    <span class="comment-count-text">${commentText}</span>
                                 </div>
                                 <div class="post-action">
                                     <i class="far fa-share-square"></i>
-                                    <span>Share</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="comment-section" id="comments-${post.id}">
+                                <div class="comment-input-wrapper">
+                                    <div class="comment-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="comment-input-container">
+                                        <input type="text" class="comment-input" placeholder="Write a comment..." data-post-id="${post.id}">
+                                        <button class="btn btn-primary comment-submit-btn" data-post-id="${post.id}">Post</button>
+                                    </div>
+                                </div>
+                                <div class="comments-list" id="comments-list-${post.id}">
+                                    <div class="loading-comments">Loading comments...</div>
                                 </div>
                             </div>
                         </article>
@@ -1782,6 +2154,25 @@
                     // Add like button event listeners
                     document.querySelectorAll('.like-btn').forEach(btn => {
                         btn.addEventListener('click', handleLike);
+                    });
+
+                    // Add comment button event listeners
+                    document.querySelectorAll('.comment-btn').forEach(btn => {
+                        btn.addEventListener('click', handleCommentToggle);
+                    });
+
+                    // Add comment submit event listeners
+                    document.querySelectorAll('.comment-submit-btn').forEach(btn => {
+                        btn.addEventListener('click', handleCommentSubmit);
+                    });
+
+                    // Add comment input enter key listeners
+                    document.querySelectorAll('.comment-input').forEach(input => {
+                        input.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCommentSubmit({ currentTarget: input.nextElementSibling });
+                            }
+                        });
                     });
 
                     // Close any open menus when clicking outside
@@ -1838,13 +2229,342 @@
                     }
                     
                     const count = data.like_count;
-                    text.textContent = count > 0 ? `${count} Like${count !== 1 ? 's' : ''}` : 'Like';
+                    text.textContent = count > 0 ? count : '';
                     
                 } catch (error) {
                     console.error('Error toggling like:', error);
                 } finally {
                     btn.style.pointerEvents = 'auto';
                 }
+            }
+
+            // Handle comment button toggle
+            async function handleCommentToggle(e) {
+                const btn = e.currentTarget;
+                const postId = btn.dataset.postId;
+                const commentSection = document.getElementById(`comments-${postId}`);
+                
+                if (commentSection.classList.contains('show')) {
+                    commentSection.classList.remove('show');
+                } else {
+                    commentSection.classList.add('show');
+                    await loadComments(postId);
+                }
+            }
+
+            // Load comments for a post
+            async function loadComments(postId) {
+                const commentsList = document.getElementById(`comments-list-${postId}`);
+                commentsList.innerHTML = '<div class="loading-comments">Loading comments...</div>';
+                
+                try {
+                    const token = localStorage.getItem('session_token');
+                    const response = await fetch(`../../api/get_comments.php?post_id=${postId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to load comments');
+                    }
+
+                    const data = await response.json();
+                    
+                    // Update comment count in button
+                    const commentBtn = document.querySelector(`.comment-btn[data-post-id="${postId}"] .comment-count-text`);
+                    if (commentBtn) {
+                        commentBtn.textContent = data.total_count > 0 ? data.total_count : '';
+                    }
+                    
+                    if (data.comments.length === 0) {
+                        commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                        return;
+                    }
+
+                    const currentUserId = data.current_user_id;
+                    commentsList.innerHTML = renderComments(data.comments, postId, currentUserId);
+                    
+                    // Add reply button listeners
+                    commentsList.querySelectorAll('.reply-btn').forEach(btn => {
+                        btn.addEventListener('click', handleReplyToggle);
+                    });
+                    
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                    commentsList.innerHTML = '<div class="no-comments">Failed to load comments.</div>';
+                }
+            }
+
+            // Render comments recursively (for threads)
+            function renderComments(comments, postId, currentUserId, isReply = false) {
+                return comments.map(comment => {
+                    const repliesHtml = comment.replies && comment.replies.length > 0 
+                        ? `<div class="comment-replies">${renderComments(comment.replies, postId, currentUserId, true)}</div>`
+                        : '';
+                    
+                    const timeAgo = getTimeAgo(new Date(comment.created_at));
+                    const isOwnComment = comment.user_id === currentUserId;
+                    const menuHtml = isOwnComment 
+                        ? `<div class="comment-menu">
+                               <button class="comment-menu-btn" onclick="toggleCommentMenu(this, event)">
+                                   <i class="fas fa-ellipsis-h"></i>
+                               </button>
+                               <div class="comment-menu-dropdown">
+                                   <div class="comment-menu-item delete" onclick="showDeleteCommentConfirm(${comment.id}, ${postId}, event)">
+                                       <i class="fas fa-trash"></i> Delete
+                                   </div>
+                               </div>
+                           </div>`
+                        : '';
+                    
+                    return `
+                        <div class="comment" data-comment-id="${comment.id}">
+                            <div class="comment-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="comment-body">
+                                ${menuHtml}
+                                <div class="comment-header">
+                                    <span class="comment-author">${comment.first_name} ${comment.last_name}</span>
+                                    <span class="comment-time">${timeAgo}</span>
+                                </div>
+                                <div class="comment-content">${escapeHtml(comment.content)}</div>
+                                <div class="comment-actions">
+                                    <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-post-id="${postId}">Reply</button>
+                                </div>
+                                <div class="reply-input-wrapper" id="reply-input-${comment.id}">
+                                    <input type="text" class="reply-input" placeholder="Write a reply..." data-parent-id="${comment.id}" data-post-id="${postId}">
+                                    <button class="btn btn-primary reply-submit-btn" data-parent-id="${comment.id}" data-post-id="${postId}">Reply</button>
+                                    <button class="reply-cancel-btn" data-comment-id="${comment.id}">Cancel</button>
+                                </div>
+                                ${repliesHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Handle reply button toggle
+            function handleReplyToggle(e) {
+                const btn = e.currentTarget;
+                const commentId = btn.dataset.commentId;
+                const replyWrapper = document.getElementById(`reply-input-${commentId}`);
+                
+                // Close all other reply inputs
+                document.querySelectorAll('.reply-input-wrapper.show').forEach(wrapper => {
+                    wrapper.classList.remove('show');
+                });
+                
+                replyWrapper.classList.add('show');
+                replyWrapper.querySelector('.reply-input').focus();
+                
+                // Add event listeners for new reply inputs
+                const submitBtn = replyWrapper.querySelector('.reply-submit-btn');
+                const cancelBtn = replyWrapper.querySelector('.reply-cancel-btn');
+                const input = replyWrapper.querySelector('.reply-input');
+                
+                submitBtn.onclick = () => handleReplySubmit(submitBtn);
+                cancelBtn.onclick = () => replyWrapper.classList.remove('show');
+                input.onkeypress = (e) => {
+                    if (e.key === 'Enter') handleReplySubmit(submitBtn);
+                };
+            }
+
+            // Handle comment submit
+            async function handleCommentSubmit(e) {
+                const btn = e.currentTarget;
+                const postId = btn.dataset.postId;
+                const input = document.querySelector(`.comment-input[data-post-id="${postId}"]`);
+                const content = input.value.trim();
+                
+                if (!content) return;
+                
+                btn.disabled = true;
+                
+                try {
+                    const token = localStorage.getItem('session_token');
+                    const response = await fetch('../../api/create_comment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ post_id: parseInt(postId), content })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to create comment');
+                    }
+
+                    input.value = '';
+                    await loadComments(postId);
+                    
+                } catch (error) {
+                    console.error('Error creating comment:', error);
+                    alert('Failed to post comment. Please try again.');
+                } finally {
+                    btn.disabled = false;
+                }
+            }
+
+            // Handle reply submit
+            async function handleReplySubmit(btn) {
+                const postId = btn.dataset.postId;
+                const parentId = btn.dataset.parentId;
+                const input = btn.previousElementSibling;
+                const content = input.value.trim();
+                
+                if (!content) return;
+                
+                btn.disabled = true;
+                
+                try {
+                    const token = localStorage.getItem('session_token');
+                    const response = await fetch('../../api/create_comment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ 
+                            post_id: parseInt(postId), 
+                            parent_id: parseInt(parentId),
+                            content 
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to create reply');
+                    }
+
+                    input.value = '';
+                    await loadComments(postId);
+                    
+                } catch (error) {
+                    console.error('Error creating reply:', error);
+                    alert('Failed to post reply. Please try again.');
+                } finally {
+                    btn.disabled = false;
+                }
+            }
+
+            // Comment menu toggle
+            window.toggleCommentMenu = function(btn, event) {
+                event.stopPropagation();
+                const dropdown = btn.nextElementSibling;
+                
+                // Close all other comment menus first
+                document.querySelectorAll('.comment-menu-dropdown.show').forEach(menu => {
+                    if (menu !== dropdown) menu.classList.remove('show');
+                });
+                
+                dropdown.classList.toggle('show');
+            };
+
+            // Close comment menus when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.comment-menu')) {
+                    document.querySelectorAll('.comment-menu-dropdown.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+
+            // Comment delete confirmation modal
+            const deleteCommentModal = document.getElementById('deleteCommentModal');
+            const confirmDeleteCommentBtn = document.getElementById('confirmDeleteCommentBtn');
+            const cancelDeleteCommentBtn = document.getElementById('cancelDeleteCommentBtn');
+            const deleteCommentClose = document.getElementById('deleteCommentClose');
+            let pendingDeleteCommentId = null;
+            let pendingDeleteCommentPostId = null;
+
+            window.showDeleteCommentConfirm = function(commentId, postId, event) {
+                event.stopPropagation();
+                pendingDeleteCommentId = commentId;
+                pendingDeleteCommentPostId = postId;
+                deleteCommentModal.classList.add('show');
+                // Close the menu
+                document.querySelectorAll('.comment-menu-dropdown.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            };
+
+            function hideDeleteCommentConfirm() {
+                deleteCommentModal.classList.remove('show');
+                pendingDeleteCommentId = null;
+                pendingDeleteCommentPostId = null;
+            }
+
+            deleteCommentClose.addEventListener('click', hideDeleteCommentConfirm);
+            cancelDeleteCommentBtn.addEventListener('click', hideDeleteCommentConfirm);
+            
+            deleteCommentModal.addEventListener('click', function(e) {
+                if (e.target === deleteCommentModal) {
+                    hideDeleteCommentConfirm();
+                }
+            });
+
+            confirmDeleteCommentBtn.addEventListener('click', async function() {
+                if (!pendingDeleteCommentId) return;
+                
+                const commentId = pendingDeleteCommentId;
+                const postId = pendingDeleteCommentPostId;
+                hideDeleteCommentConfirm();
+                
+                try {
+                    const token = localStorage.getItem('session_token');
+                    const response = await fetch('../../api/delete_comment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ comment_id: parseInt(commentId) })
+                    });
+
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to delete comment');
+                    }
+
+                    const data = await response.json();
+                    
+                    // Update comment count in button
+                    const commentBtn = document.querySelector(`.comment-btn[data-post-id="${postId}"] .comment-count-text`);
+                    if (commentBtn) {
+                        commentBtn.textContent = data.comment_count > 0 ? data.comment_count : '';
+                    }
+                    
+                    // Reload comments
+                    await loadComments(postId);
+                    
+                } catch (error) {
+                    console.error('Error deleting comment:', error);
+                    alert(error.message || 'Failed to delete comment. Please try again.');
+                }
+            });
+
+            // Helper: Get time ago string
+            function getTimeAgo(date) {
+                const now = new Date();
+                const diff = now - date;
+                const seconds = Math.floor(diff / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+                
+                if (days > 0) return days === 1 ? '1 day ago' : `${days} days ago`;
+                if (hours > 0) return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+                if (minutes > 0) return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+                return 'Just now';
+            }
+
+            // Helper: Escape HTML to prevent XSS
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
             // Toggle post menu

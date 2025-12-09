@@ -43,33 +43,37 @@ if ($tableCheck && $tableCheck->num_rows > 0) {
     $likesTableExists = true;
 }
 
-// Get posts with user info and like counts (if likes table exists)
+// Check if post_comments table exists
+$commentsTableExists = false;
+$tableCheck = $mysqli->query("SHOW TABLES LIKE 'post_comments'");
+if ($tableCheck && $tableCheck->num_rows > 0) {
+    $commentsTableExists = true;
+}
+
+// Build the query based on what tables exist
 try {
+    $likeCountSql = $likesTableExists ? "(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id)" : "0";
+    $userLikedSql = $likesTableExists ? "(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND user_id = ?)" : "0";
+    $commentCountSql = $commentsTableExists ? "(SELECT COUNT(*) FROM post_comments WHERE post_id = p.id)" : "0";
+    
+    $sql = "
+        SELECT p.*, u.first_name, u.last_name, u.username,
+               $likeCountSql as like_count,
+               $userLikedSql as user_liked,
+               $commentCountSql as comment_count
+        FROM posts p 
+        JOIN users u ON p.user_id = u.id 
+        ORDER BY p.created_at DESC 
+        LIMIT 50
+    ";
+    
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
+        throw new Exception('Prepare failed: ' . $mysqli->error);
+    }
+    
     if ($likesTableExists) {
-        $stmt = $mysqli->prepare('
-            SELECT p.*, u.first_name, u.last_name, u.username,
-                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) as like_count,
-                   (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND user_id = ?) as user_liked
-            FROM posts p 
-            JOIN users u ON p.user_id = u.id 
-            ORDER BY p.created_at DESC 
-            LIMIT 50
-        ');
-        if (!$stmt) {
-            throw new Exception('Prepare failed: ' . $mysqli->error);
-        }
         $stmt->bind_param('i', $user_id);
-    } else {
-        $stmt = $mysqli->prepare('
-            SELECT p.*, u.first_name, u.last_name, u.username
-            FROM posts p 
-            JOIN users u ON p.user_id = u.id 
-            ORDER BY p.created_at DESC 
-            LIMIT 50
-        ');
-        if (!$stmt) {
-            throw new Exception('Prepare failed: ' . $mysqli->error);
-        }
     }
 
     if (!$stmt->execute()) {
@@ -103,7 +107,8 @@ while ($row = $result->fetch_assoc()) {
         'username' => $row['username'],
         'availability_dates' => $availability_dates,
         'like_count' => isset($row['like_count']) ? intval($row['like_count']) : 0,
-        'user_liked' => isset($row['user_liked']) ? intval($row['user_liked']) > 0 : false
+        'user_liked' => isset($row['user_liked']) ? intval($row['user_liked']) > 0 : false,
+        'comment_count' => isset($row['comment_count']) ? intval($row['comment_count']) : 0
     ];
 }
 
