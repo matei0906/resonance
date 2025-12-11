@@ -1144,6 +1144,12 @@
         .comments-list {
             max-height: 400px;
             overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .comments-list::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         .comment {
