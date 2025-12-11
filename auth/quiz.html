@@ -8,6 +8,16 @@
     <!-- External font links removed — using local fonts: Hyperiot, Nofex, Work Sans (SemiBold & Bold) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Fade transition */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        body.fade-out {
+            animation: fadeOut 0.4s ease-out forwards;
+        }
+
         /* Override body background for quiz page */
         body {
             background: transparent !important;
@@ -384,7 +394,7 @@
         // Check if user is already logged in
         if (checkSession()) {
             // Already logged in, redirect to dashboard
-            window.location.href = '../dashboard/index.html';
+            window.location.href = '../dashboard/index.php';
         }
         
         // Simple password strength evaluation
@@ -613,11 +623,14 @@
                         
                         showRegistrationMessage('Account created successfully! Taking you to your feed...');
                         setTimeout(() => {
-                            window.location.href = '../dashboard/index.html';
-                        }, 1500);
+                            document.body.classList.add('fade-out');
+                            setTimeout(() => {
+                                window.location.href = '../dashboard/index.php';
+                            }, 400);
+                        }, 1100);
                     } catch (error) {
                         console.error('Registration error:', error);
-                        showRegistrationMessage('Connection error. Please try again.', true);
+                        showRegistrationMessage(error.message || 'Connection error. Please try again.', true);
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Create Account';
                     }

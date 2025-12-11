@@ -206,42 +206,13 @@
             <div id="modalBody"></div>
         </div>
     </div>
-    <script>
-        window.onload = async () => {
-            const res = await fetch("/api/auth/session.php");
-            const data = await res.json();
-
-            if (!data.logged_in) {
-                window.location.href = "/auth/login.html";
-            }
-        };
-    </script>
     <script src="./assets/js/theme.js"></script>
     <script type="module">
-        import { checkSession, logout } from './assets/js/auth.js';
+        import { checkSession } from './assets/js/auth.js';
         
-        // Check if user is already logged in and update buttons
+        // If user is logged in, redirect to dashboard
         if (checkSession()) {
-            const loginBtn = document.getElementById('loginBtn');
-            const signupBtn = document.getElementById('signupBtn');
-            
-            // Change Log In to Dashboard
-            if (loginBtn) {
-                loginBtn.textContent = 'Dashboard';
-                loginBtn.href = './dashboard/index.html';
-            }
-            
-            // Change Sign Up to Log Out
-            if (signupBtn) {
-                signupBtn.textContent = 'Log Out';
-                signupBtn.href = '#';
-                signupBtn.classList.remove('btn-primary');
-                signupBtn.classList.add('btn-outline');
-                signupBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    logout();
-                });
-            }
+            window.location.href = './dashboard/index.php';
         }
     </script>
     <script type="module" src="./assets/js/main.js"></script>

@@ -10,3 +10,14 @@ config.local.js
 **/config.local.js
 config.local.php
 **/config.local.php
+
+# User uploads (don't commit user data)
+assets/images/uploads/
+**/uploads/
+
+# Database migration scripts (run once locally)
+api/migrations/
+
+# Log files
+*.log
+**/logs/

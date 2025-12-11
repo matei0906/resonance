@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="../../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Light mode contrast improvements */
+        :root:not([data-theme="dark"]) .header {
+            background: #e8e8e8 !important;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        :root:not([data-theme="dark"]) body {
+            background: #f0f0f0 !important;
+        }
+
+        :root:not([data-theme="dark"]) .create-post,
+        :root:not([data-theme="dark"]) .post,
+        :root:not([data-theme="dark"]) .comment-section,
+        :root:not([data-theme="dark"]) .delete-confirm-content {
+            background: #ffffff !important;
+        }
+
         .posts-wrapper {
             max-width: 960px;
             margin: 100px auto;
@@ -1410,7 +1427,7 @@
     <header class="header">
         <nav class="nav">
             <div class="nav-brand">
-                <a href="../index.html" class="logo-link">
+                <a href="../index.php" class="logo-link">
                     <img src="../../assets/images/resonance.png" alt="Resonance Logo" class="logo-image">
                     <h1 class="logo">Resonance</h1>
                 </a>
@@ -1421,6 +1438,10 @@
                 <li class="nav-item"><a href="../profile/settings.php" class="nav-link">Settings</a></li>
             </ul>
             <div class="nav-actions">
+                <a href="../notifications.php" class="notification-btn" id="notificationBtn" aria-label="Notifications" style="background: none; border: none; color: var(--text-primary); font-size: 1.25rem; cursor: pointer; padding: 0.5rem; margin-right: 1rem; position: relative; text-decoration: none;">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge" style="position: absolute; top: 0; right: 0; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; display: none;">0</span>
+                </a>
                 <button class="btn btn-outline" id="logoutBtn">Log Out</button>
             </div>
             <button class="theme-toggle" aria-label="Toggle dark mode">
@@ -1607,6 +1628,9 @@
 
             // Handle logout
             logoutBtn.addEventListener('click', logout);
+
+            // Load notification count
+            loadNotificationCount();
 
             // Music search bar toggle
             const musicBtn = document.getElementById('musicBtn');
@@ -2019,6 +2043,10 @@
                 }
             });
 
+            // Store current user info globally for use in templates
+            let currentUserId = null;
+            let currentUserRole = null;
+
             async function loadPosts() {
                 try {
                     const token = localStorage.getItem('session_token');
@@ -2032,20 +2060,29 @@
                         throw new Error('Failed to load posts');
                     }
 
-                    const posts = await response.json();
+                    const data = await response.json();
                     
-                    if (posts.error) {
-                        throw new Error(posts.error);
+                    if (data.error) {
+                        throw new Error(data.error);
                     }
+
+                    // Extract posts and user info from response
+                    const posts = data.posts;
+                    currentUserId = data.current_user_id;
+                    currentUserRole = data.current_user_role;
+                    const isAdmin = currentUserRole === 'administrator';
                     
-                    if (posts.length === 0) {
+                    if (!posts || posts.length === 0) {
                         postsList.innerHTML = '<div id="noPostsMessage">No posts yet. Be the first to share something!</div>';
                         return;
                     }
 
                     console.log('Loaded posts:', posts.map(p => ({ id: p.id, availability_dates: p.availability_dates })));
+                    console.log('Current user:', { id: currentUserId, role: currentUserRole });
                     
                     postsList.innerHTML = posts.map(post => {
+                        // Check if user can delete this post (owns it OR is admin)
+                        const canDelete = post.user_id == currentUserId || isAdmin;
                         // Check for availability dates
                         const hasAvailability = post.availability_dates && post.availability_dates.length > 0;
                         
@@ -2108,6 +2145,7 @@
                                     ${songDisplay}
                                     ${availabilityBtn}
                                 </div>
+                                ${canDelete ? `
                                 <div class="post-menu">
                                     <button class="post-menu-btn" onclick="togglePostMenu(this)">
                                         <i class="fas fa-ellipsis-h"></i>
@@ -2118,6 +2156,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                ` : ''}
                             </div>
                             ${displayContent ? `<div class="post-content">${displayContent}</div>` : ''}
                             <div class="post-actions">
@@ -2282,8 +2321,9 @@
                         return;
                     }
 
-                    const currentUserId = data.current_user_id;
-                    commentsList.innerHTML = renderComments(data.comments, postId, currentUserId);
+                    const commentUserId = data.current_user_id;
+                    const commentUserRole = data.current_user_role;
+                    commentsList.innerHTML = renderComments(data.comments, postId, commentUserId, commentUserRole);
                     
                     // Add reply button listeners
                     commentsList.querySelectorAll('.reply-btn').forEach(btn => {
@@ -2297,15 +2337,16 @@
             }
 
             // Render comments recursively (for threads)
-            function renderComments(comments, postId, currentUserId, isReply = false) {
+            function renderComments(comments, postId, commentUserId, commentUserRole, isReply = false) {
+                const isAdmin = commentUserRole === 'administrator';
                 return comments.map(comment => {
                     const repliesHtml = comment.replies && comment.replies.length > 0 
-                        ? `<div class="comment-replies">${renderComments(comment.replies, postId, currentUserId, true)}</div>`
+                        ? `<div class="comment-replies">${renderComments(comment.replies, postId, commentUserId, commentUserRole, true)}</div>`
                         : '';
                     
                     const timeAgo = getTimeAgo(new Date(comment.created_at));
-                    const isOwnComment = comment.user_id === currentUserId;
-                    const menuHtml = isOwnComment 
+                    const canDeleteComment = comment.user_id === commentUserId || isAdmin;
+                    const menuHtml = canDeleteComment 
                         ? `<div class="comment-menu">
                                <button class="comment-menu-btn" onclick="toggleCommentMenu(this, event)">
                                    <i class="fas fa-ellipsis-h"></i>
@@ -2565,6 +2606,39 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            // Load notification count
+            async function loadNotificationCount() {
+                const token = localStorage.getItem('session_token');
+                if (!token) return;
+                
+                try {
+                    const response = await fetch('../../api/get_notification_count.php', {
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+                    const count = data.unread_count || 0;
+                    const badge = document.getElementById('notificationBadge');
+                    
+                    if (badge) {
+                        if (count > 0) {
+                            badge.textContent = count > 99 ? '99+' : count;
+                            badge.classList.remove('hidden');
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.classList.add('hidden');
+                            badge.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading notification count:', error);
+                }
             }
 
             // Toggle post menu

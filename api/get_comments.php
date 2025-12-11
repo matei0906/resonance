@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -37,19 +38,16 @@ if (!$token) {
     die(json_encode(['error' => 'No authorization token provided']));
 }
 
-// Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+// Verify session and get user info including role
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$current_user_id = $session['user_id'];
+$current_user_id = $userInfo['user_id'];
+$current_user_role = $userInfo['role'];
 
 // Get post_id from query params
 if (!isset($_GET['post_id'])) {
@@ -72,7 +70,9 @@ if (!$stmt) {
     // Table might not have any comments yet, return empty
     echo json_encode([
         'comments' => [],
-        'total_count' => 0
+        'total_count' => 0,
+        'current_user_id' => $current_user_id,
+        'current_user_role' => $current_user_role
     ]);
     exit;
 }
@@ -113,5 +113,6 @@ $threadedComments = buildCommentTree($comments);
 echo json_encode([
     'comments' => $threadedComments,
     'total_count' => count($comments),
-    'current_user_id' => intval($current_user_id)
+    'current_user_id' => $current_user_id,
+    'current_user_role' => $current_user_role
 ]);

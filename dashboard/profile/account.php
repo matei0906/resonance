@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="../../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Light mode contrast improvements */
+        :root:not([data-theme="dark"]) .header {
+            background: #e8e8e8 !important;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        :root:not([data-theme="dark"]) body {
+            background: #f0f0f0 !important;
+        }
+
+        :root:not([data-theme="dark"]) .account-info,
+        :root:not([data-theme="dark"]) .modal-content {
+            background: #ffffff !important;
+        }
+
         .main-content {
             padding: 2rem 0;
             min-height: calc(100vh - 80px);
@@ -28,11 +43,15 @@
         
         .profile-section {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 2rem;
             margin-bottom: 2rem;
             padding-bottom: 2rem;
             border-bottom: 1px solid var(--border-color);
+        }
+        
+        .profile-details {
+            padding-top: 0.75rem;
         }
         
         .profile-photo {
@@ -85,6 +104,7 @@
             background: var(--input-bg);
             color: var(--text-primary);
             font-size: 1rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         .detail-group input[readonly] {
@@ -114,6 +134,44 @@
         
         .btn-link:hover {
             color: #9b2c1a;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(40, 167, 69, 0.3);
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast i {
+            font-size: 1.25rem;
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 10px 40px rgba(220, 53, 69, 0.3);
         }
         
         /* Modal Styles */
@@ -199,6 +257,7 @@
             background: var(--input-bg);
             color: var(--text-primary);
             font-size: 1rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             box-sizing: border-box;
         }
         
@@ -241,7 +300,7 @@
         <header class="header">
             <nav class="nav">
                 <div class="nav-brand">
-                <a href="../../index.html" class="logo-link">
+                    <a href="../index.php" class="logo-link">
                         <img src="../../assets/images/resonance.png" alt="Resonance Logo" class="logo-image">
                         <h1 class="logo">Resonance</h1>
                     </a>
@@ -252,6 +311,10 @@
                     <li class="nav-item"><a href="settings.php" class="nav-link">Settings</a></li>
                 </ul>
                 <div class="nav-actions">
+                    <a href="../notifications.php" class="notification-btn" id="notificationBtn" aria-label="Notifications" style="background: none; border: none; color: var(--text-primary); font-size: 1.25rem; cursor: pointer; padding: 0.5rem; margin-right: 1rem; position: relative; text-decoration: none;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge" style="position: absolute; top: 0; right: 0; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; display: none;">0</span>
+                    </a>
                     <button class="btn btn-outline" id="logoutBtn">Log Out</button>
                 </div>
                 <button class="theme-toggle" aria-label="Toggle dark mode">
@@ -264,6 +327,12 @@
                 </div>
             </nav>
         </header>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
 
         <main class="main-content">
             <div class="container">
@@ -629,11 +698,11 @@
                 console.log('Upload successful, new photo URL:', data.photo_url);
                 const photoElement = document.getElementById('profilePhoto');
                 photoElement.src = data.photo_url + '?t=' + Date.now();
-                alert('Profile photo updated successfully!');
+                showToast('Profile photo updated successfully!');
                 
             } catch (error) {
                 console.error('Error uploading photo:', error);
-                alert('Failed to upload photo: ' + error.message);
+                showToast('Failed to upload photo: ' + error.message, true);
             } finally {
                 // Reset button
                 btn.textContent = originalText;
@@ -650,6 +719,63 @@
         });
 
         // Load data on page load
-        document.addEventListener('DOMContentLoaded', loadAccountData);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAccountData();
+            loadNotificationCount();
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            
+            if (isError) {
+                toast.classList.add('error');
+                toastIcon.className = 'fas fa-exclamation-circle';
+            } else {
+                toast.classList.remove('error');
+                toastIcon.className = 'fas fa-check-circle';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        async function loadNotificationCount() {
+            const token = localStorage.getItem('session_token');
+            if (!token) return;
+            
+            try {
+                const response = await fetch('../../api/get_notification_count.php', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const count = data.unread_count || 0;
+                const badge = document.getElementById('notificationBadge');
+                
+                if (badge) {
+                    if (count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.classList.remove('hidden');
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.classList.add('hidden');
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading notification count:', error);
+            }
+        }
     </script>
 </html>

@@ -123,6 +123,7 @@ try {
     // Generate session token
     $session_token = bin2hex(random_bytes(32));
     $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
+    $expires_timestamp = strtotime('+24 hours') * 1000; // Convert to milliseconds for JS
     $ip = $_SERVER['REMOTE_ADDR'];
     $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
@@ -134,11 +135,11 @@ try {
     // Commit transaction
     $mysqli->commit();
 
-    // Return success
+    // Return success with timestamp in milliseconds (same as login)
     echo json_encode([
         'success' => true,
         'session_token' => $session_token,
-        'expires_at' => $expires_at
+        'expires_at' => $expires_timestamp
     ]);
 
 } catch (Exception $e) {

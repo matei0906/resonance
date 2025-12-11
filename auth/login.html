@@ -8,6 +8,16 @@
     <!-- Local fonts: Hyperiot, Nofex, Work Sans (SemiBold & Bold) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Fade transition */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        body.fade-out {
+            animation: fadeOut 0.4s ease-out forwards;
+        }
+
         /* Override body background for login page */
         body {
             background: transparent !important;
@@ -244,8 +254,11 @@
                     });
                     showMessage('Login successful! Redirecting...');
                     setTimeout(() => {
-                        window.location.href = '../dashboard/index.php';
-                    }, 1500);
+                        document.body.classList.add('fade-out');
+                        setTimeout(() => {
+                            window.location.href = '../dashboard/index.php';
+                        }, 400);
+                    }, 1100);
                 } else {
                     showMessage(data.error || 'Login failed', true);
                     loginBtn.disabled = false;

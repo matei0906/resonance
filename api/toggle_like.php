@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -27,18 +28,14 @@ if (!$token) {
 }
 
 // Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$user_id = $session['user_id'];
+$user_id = $userInfo['user_id'];
 
 // Get post_id from request
 $input = json_decode(file_get_contents('php://input'), true);
@@ -48,6 +45,18 @@ if (!$post_id) {
     http_response_code(400);
     die(json_encode(['error' => 'Post ID is required']));
 }
+
+// Get the post owner
+$stmt = $mysqli->prepare('SELECT user_id FROM posts WHERE id = ?');
+$stmt->bind_param('i', $post_id);
+$stmt->execute();
+$postResult = $stmt->get_result();
+if ($postResult->num_rows === 0) {
+    http_response_code(404);
+    die(json_encode(['error' => 'Post not found']));
+}
+$post = $postResult->fetch_assoc();
+$post_owner_id = $post['user_id'];
 
 // Check if user already liked this post
 $stmt = $mysqli->prepare('SELECT id FROM post_likes WHERE post_id = ? AND user_id = ?');
@@ -61,12 +70,28 @@ if ($result->num_rows > 0) {
     $stmt->bind_param('ii', $post_id, $user_id);
     $stmt->execute();
     $liked = false;
+    
+    // Remove notification when unliked
+    $stmt = $mysqli->prepare('DELETE FROM notifications WHERE from_user_id = ? AND post_id = ? AND type = "like"');
+    $stmt->bind_param('ii', $user_id, $post_id);
+    $stmt->execute();
 } else {
     // Like - add the like
     $stmt = $mysqli->prepare('INSERT INTO post_likes (post_id, user_id) VALUES (?, ?)');
     $stmt->bind_param('ii', $post_id, $user_id);
     $stmt->execute();
     $liked = true;
+    
+    // Create notification for post owner (only if not liking own post)
+    if ($post_owner_id != $user_id) {
+        // Check if notifications table exists
+        $tableCheck = $mysqli->query("SHOW TABLES LIKE 'notifications'");
+        if ($tableCheck && $tableCheck->num_rows > 0) {
+            $stmt = $mysqli->prepare('INSERT INTO notifications (user_id, from_user_id, type, post_id) VALUES (?, ?, "like", ?)');
+            $stmt->bind_param('iii', $post_owner_id, $user_id, $post_id);
+            $stmt->execute();
+        }
+    }
 }
 
 // Get new like count
@@ -84,4 +109,3 @@ echo json_encode([
 
 $mysqli->close();
 ?>
-

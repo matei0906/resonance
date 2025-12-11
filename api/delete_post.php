@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -26,19 +27,16 @@ if (!$token) {
     die(json_encode(['error' => 'No authorization token provided']));
 }
 
-// Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+// Verify session and get user info including role
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$user_id = $session['user_id'];
+$user_id = $userInfo['user_id'];
+$is_admin = $userInfo['role'] === 'administrator';
 
 // Get post_id from request
 $input = json_decode(file_get_contents('php://input'), true);
@@ -49,7 +47,7 @@ if (!$post_id) {
     die(json_encode(['error' => 'Post ID is required']));
 }
 
-// Verify the user owns this post
+// Verify the post exists
 $stmt = $mysqli->prepare('SELECT user_id FROM posts WHERE id = ?');
 $stmt->bind_param('i', $post_id);
 $stmt->execute();
@@ -61,14 +59,16 @@ if ($result->num_rows === 0) {
 }
 
 $post = $result->fetch_assoc();
-if ($post['user_id'] != $user_id) {
+
+// Check if user owns the post OR is an administrator
+if ($post['user_id'] != $user_id && !$is_admin) {
     http_response_code(403);
     die(json_encode(['error' => 'You can only delete your own posts']));
 }
 
-// Delete the post
-$stmt = $mysqli->prepare('DELETE FROM posts WHERE id = ? AND user_id = ?');
-$stmt->bind_param('ii', $post_id, $user_id);
+// Delete the post (admins can delete any post)
+$stmt = $mysqli->prepare('DELETE FROM posts WHERE id = ?');
+$stmt->bind_param('i', $post_id);
 
 if ($stmt->execute()) {
     echo json_encode([
@@ -82,4 +82,3 @@ if ($stmt->execute()) {
 
 $mysqli->close();
 ?>
-

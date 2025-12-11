@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -22,19 +23,16 @@ if (!$token) {
     die(json_encode(['error' => 'No authorization token provided']));
 }
 
-// Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+// Verify session and get user info including role
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$user_id = $session['user_id'];
+$user_id = $userInfo['user_id'];
+$user_role = $userInfo['role'];
 
 // Check if post_likes table exists
 $likesTableExists = false;
@@ -112,4 +110,9 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
-echo json_encode($posts);
+// Return posts along with current user info
+echo json_encode([
+    'posts' => $posts,
+    'current_user_id' => $user_id,
+    'current_user_role' => $user_role
+]);

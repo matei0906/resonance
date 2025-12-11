@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -20,19 +21,16 @@ if (!$token) {
     die(json_encode(['error' => 'No authorization token provided']));
 }
 
-// Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+// Verify session and get user info including role
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$user_id = $session['user_id'];
+$user_id = $userInfo['user_id'];
+$is_admin = $userInfo['role'] === 'administrator';
 
 // Get request body
 $data = json_decode(file_get_contents('php://input'), true);
@@ -44,7 +42,7 @@ if (!isset($data['comment_id'])) {
 
 $comment_id = intval($data['comment_id']);
 
-// Verify comment exists and belongs to user
+// Verify comment exists
 $stmt = $mysqli->prepare('SELECT id, post_id, user_id FROM post_comments WHERE id = ?');
 $stmt->bind_param('i', $comment_id);
 $stmt->execute();
@@ -57,8 +55,8 @@ if ($result->num_rows === 0) {
 
 $comment = $result->fetch_assoc();
 
-// Check if user owns the comment
-if ($comment['user_id'] != $user_id) {
+// Check if user owns the comment OR is an administrator
+if ($comment['user_id'] != $user_id && !$is_admin) {
     http_response_code(403);
     die(json_encode(['error' => 'You can only delete your own comments']));
 }
@@ -90,4 +88,3 @@ echo json_encode([
     'post_id' => $post_id,
     'comment_count' => intval($countResult['count'])
 ]);
-

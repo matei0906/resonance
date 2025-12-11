@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'auth_helpers.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -38,18 +39,14 @@ if (!$token) {
 }
 
 // Verify session
-$stmt = $mysqli->prepare('SELECT user_id FROM user_sessions WHERE session_token = ? AND expires_at > NOW()');
-$stmt->bind_param('s', $token);
-$stmt->execute();
-$result = $stmt->get_result();
+$userInfo = verifySession($mysqli, $token);
 
-if ($result->num_rows === 0) {
+if (!$userInfo) {
     http_response_code(401);
     die(json_encode(['error' => 'Invalid or expired session']));
 }
 
-$session = $result->fetch_assoc();
-$user_id = $session['user_id'];
+$user_id = $userInfo['user_id'];
 
 // Get request body
 $data = json_decode(file_get_contents('php://input'), true);
@@ -68,14 +65,17 @@ if (empty($content)) {
     die(json_encode(['error' => 'Comment content cannot be empty']));
 }
 
-// Verify post exists
-$stmt = $mysqli->prepare('SELECT id FROM posts WHERE id = ?');
+// Verify post exists and get owner
+$stmt = $mysqli->prepare('SELECT id, user_id FROM posts WHERE id = ?');
 $stmt->bind_param('i', $post_id);
 $stmt->execute();
-if ($stmt->get_result()->num_rows === 0) {
+$postResult = $stmt->get_result();
+if ($postResult->num_rows === 0) {
     http_response_code(404);
     die(json_encode(['error' => 'Post not found']));
 }
+$post = $postResult->fetch_assoc();
+$post_owner_id = $post['user_id'];
 
 // If parent_id provided, verify it exists and belongs to the same post
 if ($parent_id) {
@@ -103,6 +103,17 @@ if (!$stmt->execute()) {
 }
 
 $comment_id = $mysqli->insert_id;
+
+// Create notification for post owner (only if not commenting on own post)
+if ($post_owner_id != $user_id) {
+    // Check if notifications table exists
+    $tableCheck = $mysqli->query("SHOW TABLES LIKE 'notifications'");
+    if ($tableCheck && $tableCheck->num_rows > 0) {
+        $stmt = $mysqli->prepare('INSERT INTO notifications (user_id, from_user_id, type, post_id, comment_id) VALUES (?, ?, "comment", ?, ?)');
+        $stmt->bind_param('iiii', $post_owner_id, $user_id, $post_id, $comment_id);
+        $stmt->execute();
+    }
+}
 
 // Fetch the created comment with user info
 $stmt = $mysqli->prepare('
