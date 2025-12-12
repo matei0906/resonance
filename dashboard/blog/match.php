@@ -785,6 +785,12 @@
                     ${commonSectionsHtml ? `<div class="match-details">${commonSectionsHtml}</div>` : ''}
                     
                     ${skillExchangeHtml}
+                    
+                    <div class="match-actions">
+                        <a href="direct-message.php?user_id=${user.id}" class="btn btn-primary">
+                            <i class="fas fa-envelope"></i> Message
+                        </a>
+                    </div>
                 </div>
             `;
         }
