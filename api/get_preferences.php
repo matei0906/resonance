@@ -39,6 +39,7 @@ $result = $stmt->get_result();
 $preferences = [
     'genres' => [],
     'instruments' => [],
+    'instrument_interests' => [],
     'availability' => []
 ];
 

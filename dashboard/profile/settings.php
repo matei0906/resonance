@@ -214,6 +214,44 @@
         .hidden {
             display: none;
         }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(40, 167, 69, 0.3);
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast i {
+            font-size: 1.25rem;
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 10px 40px rgba(220, 53, 69, 0.3);
+        }
     </style>
     <body>
         <header class="header">
@@ -285,7 +323,7 @@
                                     </div>
                                 </div>
                                 <div class="bank-section" data-cat="instruments">
-                                    <div class="bank-title">Instruments</div>
+                                    <div class="bank-title">Instruments You Play</div>
                                     <div class="chips" id="bank-instruments">
                                         <button type="button" class="bank-chip" data-cat="instruments">Guitar</button>
                                         <button type="button" class="bank-chip" data-cat="instruments">Bass</button>
@@ -300,6 +338,24 @@
                                     <div class="bank-other">
                                         <input type="text" id="other-instruments" placeholder="Other instrument">
                                         <button type="button" class="btn btn-outline" data-add="instruments">Add</button>
+                                    </div>
+                                </div>
+                                <div class="bank-section" data-cat="instrument_interests">
+                                    <div class="bank-title">Instrument Interest</div>
+                                    <div class="chips" id="bank-instrument_interests">
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Guitar</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Bass</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Piano</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Drums</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Vocals</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Violin</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Saxophone</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Trumpet</button>
+                                        <button type="button" class="bank-chip" data-cat="instrument_interests">Production</button>
+                                    </div>
+                                    <div class="bank-other">
+                                        <input type="text" id="other-instrument_interests" placeholder="Other instrument">
+                                        <button type="button" class="btn btn-outline" data-add="instrument_interests">Add</button>
                                     </div>
                                 </div>
                                 <div class="bank-section" data-cat="availability">
@@ -327,6 +383,13 @@
                 </div>
             </div>
         </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Preferences saved successfully!</span>
+    </div>
+
     <script src="../../assets/js/theme.js"></script>
     <script>
         // Logout functionality
@@ -380,6 +443,30 @@
             }
         }
 
+        // Toast notification function
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            
+            if (isError) {
+                toast.classList.add('error');
+                toastIcon.className = 'fas fa-exclamation-circle';
+            } else {
+                toast.classList.remove('error');
+                toastIcon.className = 'fas fa-check-circle';
+            }
+            
+            toast.classList.add('show');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         // Save preferences
         document.getElementById('saveBtn').addEventListener('click', async function() {
             const token = localStorage.getItem('session_token');
@@ -404,11 +491,11 @@
                     throw new Error('Failed to save preferences');
                 }
 
-                alert('Preferences saved successfully!');
+                showToast('Preferences saved successfully!');
                 
             } catch (error) {
                 console.error('Error saving preferences:', error);
-                alert('Failed to save preferences. Please try again.');
+                showToast('Failed to save preferences. Please try again.', true);
             }
         });
 

@@ -38,7 +38,7 @@ if (!$user) {
     $stmt->execute();
     
     http_response_code(401);
-    die(json_encode(['error' => 'Invalid credentials']));
+    die(json_encode(['error' => 'Email or password is incorrect.']));
 }
 
 // Verify password
@@ -79,5 +79,5 @@ if (password_verify($password, $user['password_hash'])) {
     $stmt->execute();
 
     http_response_code(401);
-    echo json_encode(['error' => 'Invalid credentials']);
+    echo json_encode(['error' => 'Email or password is incorrect.']);
 }

@@ -24,10 +24,106 @@
             background: #ffffff !important;
         }
 
+        /* Dropdown Navigation */
+        .nav-item.has-dropdown {
+            position: relative;
+        }
+
+        .nav-item.has-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .nav-item.has-dropdown .nav-link i {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.has-dropdown:hover .nav-link i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            padding: 0.5rem 0;
+            min-width: 140px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .nav-item.has-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.25rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            color: #9b2c1a;
+        }
+
+        .dropdown-item.active {
+            color: #9b2c1a;
+            font-weight: 600;
+        }
+
         .posts-wrapper {
             max-width: 960px;
-            margin: 100px auto;
+            margin: 0 auto 40px;
             padding: 0 20px;
+        }
+
+        /* Create Post Modal Overlay */
+        .create-post-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .create-post-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .create-post {
@@ -35,8 +131,93 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 20px var(--shadow-sm);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .create-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .create-post-header h3 {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .create-post-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .create-post-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Create Post Button Container - matches posts-wrapper alignment */
+        .create-post-btn-container {
+            max-width: 960px;
+            margin: 140px auto 30px;
+            padding: 0 20px;
+        }
+
+        .create-post-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #ff6b35 100%);
+            color: white !important;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 138, 61, 0.3);
+        }
+
+        .create-post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 138, 61, 0.5);
+        }
+
+        .create-post-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* Light mode button adjustments */
+        :root:not([data-theme="dark"]) .create-post-btn {
+            color: #1a1a1a !important;
+            box-shadow: 0 4px 15px rgba(255, 138, 61, 0.4);
+        }
+
+        :root:not([data-theme="dark"]) .create-post-btn:hover {
+            color: #1a1a1a !important;
+            box-shadow: 0 8px 25px rgba(255, 138, 61, 0.5);
+        }
+
+        :root:not([data-theme="dark"]) .create-post-btn span,
+        :root:not([data-theme="dark"]) .create-post-btn i {
+            color: #1a1a1a !important;
         }
 
         .create-post textarea {
@@ -1439,7 +1620,14 @@
                 </a>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item"><a href="../index.php" class="nav-link">Dashboard</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="../index.php" class="nav-link">Dashboard <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="posts.php" class="dropdown-item active">Posts</a>
+                        <a href="match.php" class="dropdown-item">Smart Match</a>
+                        <a href="direct-message.php" class="dropdown-item">Messages</a>
+                    </div>
+                </li>
                 <li class="nav-item"><a href="../profile/account.php" class="nav-link">My Account</a></li>
                 <li class="nav-item"><a href="../profile/settings.php" class="nav-link">Settings</a></li>
             </ul>
@@ -1461,9 +1649,22 @@
         </nav>
     </header>
 
-    <main class="posts-wrapper">
+    <!-- Create Post Button -->
+    <div class="create-post-btn-container">
+        <button class="create-post-btn" id="openCreatePost">
+            <i class="fas fa-plus"></i>
+            <span>Create Post</span>
+        </button>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div class="create-post-overlay" id="createPostOverlay">
         <div class="create-post">
-            <textarea id="postContent" placeholder="Share your musical thoughts, find bandmates, or schedule jam sessions..."></textarea>
+            <div class="create-post-header">
+                <h3>Create Post</h3>
+                <button class="create-post-close" id="closeCreatePost">&times;</button>
+            </div>
+            <textarea id="postContent" placeholder="Share music, find bandmates, or schedule jam sessions..."></textarea>
             <div class="create-post-actions">
                 <div class="post-attachments">
                     <div class="music-search-container">
@@ -1521,7 +1722,9 @@
                 <button type="button" class="btn btn-primary" id="submitPost">Post</button>
             </div>
         </div>
+    </div>
 
+    <main class="posts-wrapper">
         <div class="posts-list" id="postsList">
             <div id="noPostsMessage">No posts yet. Be the first to share something!</div>
         </div>
@@ -1637,6 +1840,34 @@
 
             // Load notification count
             loadNotificationCount();
+
+            // Create Post Modal
+            const createPostOverlay = document.getElementById('createPostOverlay');
+            const openCreatePostBtn = document.getElementById('openCreatePost');
+            const closeCreatePostBtn = document.getElementById('closeCreatePost');
+
+            openCreatePostBtn.addEventListener('click', function() {
+                createPostOverlay.classList.add('active');
+                postContent.focus();
+            });
+
+            closeCreatePostBtn.addEventListener('click', function() {
+                createPostOverlay.classList.remove('active');
+            });
+
+            // Close modal when clicking outside
+            createPostOverlay.addEventListener('click', function(e) {
+                if (e.target === createPostOverlay) {
+                    createPostOverlay.classList.remove('active');
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && createPostOverlay.classList.contains('active')) {
+                    createPostOverlay.classList.remove('active');
+                }
+            });
 
             // Music search bar toggle
             const musicBtn = document.getElementById('musicBtn');
@@ -2038,6 +2269,9 @@
                     selectedSongText.textContent = '';
                     selectedDates = [];
                     selectedDatesDisplay.classList.remove('show');
+                    
+                    // Close the create post modal
+                    createPostOverlay.classList.remove('active');
                     
                     // Refresh posts
                     loadPosts();

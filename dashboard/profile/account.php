@@ -295,6 +295,187 @@
             font-size: 0.875rem;
             color: var(--text-secondary);
         }
+
+        /* Password Match Indicator */
+        .password-match {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-match.visible {
+            opacity: 1;
+        }
+
+        .password-match.match {
+            color: #28a745;
+        }
+
+        .password-match.no-match {
+            color: #dc3545;
+        }
+
+        .password-match i {
+            font-size: 0.9rem;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .danger-zone h3 {
+            color: #dc3545;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .danger-zone p {
+            color: var(--text-secondary);
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Delete Account Modal Styles */
+        .delete-modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 10px 40px var(--shadow-sm);
+        }
+
+        .delete-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .delete-modal-header h3 {
+            margin: 0;
+            color: #dc3545;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .delete-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .delete-modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .delete-modal-body {
+            padding: 1.5rem;
+        }
+
+        .delete-modal-body p {
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0 0 1rem 0;
+        }
+
+        .delete-modal-body .warning-text {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .delete-modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .delete-modal-actions .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .delete-modal-actions .btn-outline:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .delete-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .delete-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .delete-form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-sizing: border-box;
+        }
+
+        .delete-form-group input:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
     </style>
     <body>
         <header class="header">
@@ -378,9 +559,54 @@
                         <button class="btn btn-primary" id="saveBtn">Save Changes</button>
                         <button class="btn btn-outline" id="cancelBtn">Cancel</button>
                     </div>
+
+                    <div class="danger-zone">
+                        <h3>Danger Zone</h3>
+                        <p>Once you delete your account, there is no going back. All your data will be permanently removed.</p>
+                        <button class="btn-danger" id="deleteAccountBtn">Delete Account</button>
+                    </div>
                 </div>
             </div>
         </main>
+
+        <!-- Delete Account Confirmation Modal -->
+        <div id="deleteConfirmModal" class="modal hidden">
+            <div class="delete-modal-content">
+                <div class="delete-modal-header">
+                    <h3>Delete Account</h3>
+                    <button class="delete-modal-close" id="deleteConfirmClose">&times;</button>
+                </div>
+                <div class="delete-modal-body">
+                    <p>Are you sure you want to delete your account?</p>
+                    <p class="warning-text">This action cannot be undone. All your posts, comments, and data will be permanently deleted.</p>
+                    <div class="delete-modal-actions">
+                        <button class="btn btn-outline" id="deleteConfirmCancel">Cancel</button>
+                        <button class="btn-danger" id="deleteConfirmProceed">Yes, Delete My Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Account Password Modal -->
+        <div id="deletePasswordModal" class="modal hidden">
+            <div class="delete-modal-content">
+                <div class="delete-modal-header">
+                    <h3>Confirm Deletion</h3>
+                    <button class="delete-modal-close" id="deletePasswordClose">&times;</button>
+                </div>
+                <div class="delete-modal-body">
+                    <p>Please enter your password to confirm account deletion.</p>
+                    <div class="delete-form-group">
+                        <label for="deletePassword">Password</label>
+                        <input type="password" id="deletePassword" placeholder="Enter your password">
+                    </div>
+                    <div class="delete-modal-actions">
+                        <button class="btn btn-outline" id="deletePasswordCancel">Cancel</button>
+                        <button class="btn-danger" id="deletePasswordConfirm">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Password Change Modal -->
         <div id="passwordModal" class="modal hidden">
@@ -406,6 +632,10 @@
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password:</label>
                             <input type="password" id="confirmPassword" required minlength="8">
+                            <div class="password-match" id="passwordMatch">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="passwordMatchText">Passwords match</span>
+                            </div>
                         </div>
                         <div class="modal-actions">
                             <button type="button" class="btn btn-outline" id="passwordCancelBtn">Cancel</button>
@@ -476,7 +706,7 @@
                 
             } catch (error) {
                 console.error('Error loading account data:', error);
-                alert('Failed to load account data. Please try again.');
+                showToast('Failed to load account data. Please try again.', true);
             }
         }
 
@@ -503,12 +733,12 @@
                     throw new Error('Failed to update account');
                 }
 
-                alert('Account updated successfully!');
+                showToast('Account updated successfully!');
                 loadAccountData(); // Reload data
                 
             } catch (error) {
                 console.error('Error updating account:', error);
-                alert('Failed to update account. Please try again.');
+                showToast('Failed to update account. Please try again.', true);
             }
         });
 
@@ -524,6 +754,8 @@
             // Reset strength indicator
             document.getElementById('strengthFill').style.width = '0%';
             document.getElementById('strengthLabel').textContent = 'Strength: ';
+            // Reset match indicator
+            document.getElementById('passwordMatch').classList.remove('visible', 'match', 'no-match');
         });
 
         // Close password modal
@@ -533,6 +765,8 @@
             // Reset strength indicator
             document.getElementById('strengthFill').style.width = '0%';
             document.getElementById('strengthLabel').textContent = 'Strength: ';
+            // Reset match indicator
+            document.getElementById('passwordMatch').classList.remove('visible', 'match', 'no-match');
         });
 
         document.getElementById('passwordCancelBtn').addEventListener('click', function() {
@@ -541,6 +775,8 @@
             // Reset strength indicator
             document.getElementById('strengthFill').style.width = '0%';
             document.getElementById('strengthLabel').textContent = 'Strength: ';
+            // Reset match indicator
+            document.getElementById('passwordMatch').classList.remove('visible', 'match', 'no-match');
         });
 
         // Password strength evaluation
@@ -592,6 +828,37 @@
 
         // Add event listener for password strength
         document.getElementById('newPassword').addEventListener('input', updatePasswordStrength);
+        document.getElementById('newPassword').addEventListener('input', checkPasswordMatch);
+        document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+
+        // Check if passwords match
+        function checkPasswordMatch() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchIndicator = document.getElementById('passwordMatch');
+            const matchIcon = matchIndicator.querySelector('i');
+            const matchText = document.getElementById('passwordMatchText');
+
+            // Only show indicator if confirm password field has content
+            if (confirmPassword.length === 0) {
+                matchIndicator.classList.remove('visible', 'match', 'no-match');
+                return;
+            }
+
+            matchIndicator.classList.add('visible');
+
+            if (newPassword === confirmPassword && newPassword.length > 0) {
+                matchIndicator.classList.remove('no-match');
+                matchIndicator.classList.add('match');
+                matchIcon.className = 'fas fa-check-circle';
+                matchText.textContent = 'Passwords match';
+            } else {
+                matchIndicator.classList.remove('match');
+                matchIndicator.classList.add('no-match');
+                matchIcon.className = 'fas fa-times-circle';
+                matchText.textContent = 'Passwords do not match';
+            }
+        }
 
         // Handle password form submission
         document.getElementById('passwordForm').addEventListener('submit', async function(e) {
@@ -603,7 +870,7 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
             
             if (newPassword !== confirmPassword) {
-                alert('New passwords do not match');
+                showToast('New passwords do not match', true);
                 return;
             }
             
@@ -627,12 +894,12 @@
                     throw new Error(data.error || 'Failed to change password');
                 }
 
-                alert('Password changed successfully!');
+                showToast('Password changed successfully!');
                 document.getElementById('passwordModal').classList.add('hidden');
                 
             } catch (error) {
                 console.error('Error changing password:', error);
-                alert('Failed to change password: ' + error.message);
+                showToast('Failed to change password: ' + error.message, true);
             }
         });
 
@@ -649,13 +916,13 @@
             // Validate file type
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             if (!allowedTypes.includes(file.type)) {
-                alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+                showToast('Please select a valid image file (JPEG, PNG, GIF, or WebP)', true);
                 return;
             }
 
             // Validate file size (5MB max)
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB');
+                showToast('File size must be less than 5MB', true);
                 return;
             }
 
@@ -789,5 +1056,110 @@
                 console.error('Error loading notification count:', error);
             }
         }
+
+        // Delete Account Flow
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        const deletePasswordModal = document.getElementById('deletePasswordModal');
+
+        // Step 1: Show confirmation modal
+        document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+            deleteConfirmModal.classList.remove('hidden');
+        });
+
+        // Close confirmation modal
+        document.getElementById('deleteConfirmClose').addEventListener('click', function() {
+            deleteConfirmModal.classList.add('hidden');
+        });
+
+        document.getElementById('deleteConfirmCancel').addEventListener('click', function() {
+            deleteConfirmModal.classList.add('hidden');
+        });
+
+        // Step 2: Proceed to password modal
+        document.getElementById('deleteConfirmProceed').addEventListener('click', function() {
+            deleteConfirmModal.classList.add('hidden');
+            deletePasswordModal.classList.remove('hidden');
+            document.getElementById('deletePassword').value = '';
+            document.getElementById('deletePassword').focus();
+        });
+
+        // Close password modal
+        document.getElementById('deletePasswordClose').addEventListener('click', function() {
+            deletePasswordModal.classList.add('hidden');
+            document.getElementById('deletePassword').value = '';
+        });
+
+        document.getElementById('deletePasswordCancel').addEventListener('click', function() {
+            deletePasswordModal.classList.add('hidden');
+            document.getElementById('deletePassword').value = '';
+        });
+
+        // Step 3: Delete account
+        document.getElementById('deletePasswordConfirm').addEventListener('click', async function() {
+            const password = document.getElementById('deletePassword').value;
+            
+            if (!password) {
+                showToast('Please enter your password', true);
+                return;
+            }
+
+            const token = localStorage.getItem('session_token');
+            const confirmBtn = this;
+            const originalText = confirmBtn.textContent;
+            
+            confirmBtn.textContent = 'Deleting...';
+            confirmBtn.disabled = true;
+
+            try {
+                const response = await fetch('../../api/delete_account.php', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to delete account');
+                }
+
+                // Clear session and redirect
+                localStorage.removeItem('session_token');
+                localStorage.removeItem('session_expiry');
+                
+                // Redirect to home with message
+                window.location.href = '../../index.html';
+                
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                showToast(error.message, true);
+                confirmBtn.textContent = originalText;
+                confirmBtn.disabled = false;
+            }
+        });
+
+        // Allow Enter key to submit password
+        document.getElementById('deletePassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('deletePasswordConfirm').click();
+            }
+        });
+
+        // Close modals when clicking outside
+        deleteConfirmModal.addEventListener('click', function(e) {
+            if (e.target === deleteConfirmModal) {
+                deleteConfirmModal.classList.add('hidden');
+            }
+        });
+
+        deletePasswordModal.addEventListener('click', function(e) {
+            if (e.target === deletePasswordModal) {
+                deletePasswordModal.classList.add('hidden');
+                document.getElementById('deletePassword').value = '';
+            }
+        });
     </script>
 </html>

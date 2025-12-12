@@ -21,6 +21,65 @@
             background: #ffffff !important;
         }
 
+        /* Dropdown Navigation */
+        .nav-item.has-dropdown {
+            position: relative;
+        }
+
+        .nav-item.has-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .nav-item.has-dropdown .nav-link i {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.has-dropdown:hover .nav-link i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            padding: 0.5rem 0;
+            min-width: 140px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .nav-item.has-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 0.25rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            color: #9b2c1a;
+        }
+
+        .dropdown-item.active {
+            color: #9b2c1a;
+            font-weight: 600;
+        }
+
         .messages-wrapper {
             max-width: 1200px;
             margin: 100px auto;
@@ -58,7 +117,14 @@
                 </a>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item"><a href="../index.php" class="nav-link">Dashboard</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="../index.php" class="nav-link">Dashboard <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="posts.php" class="dropdown-item">Posts</a>
+                        <a href="match.php" class="dropdown-item">Smart Match</a>
+                        <a href="direct-message.php" class="dropdown-item active">Messages</a>
+                    </div>
+                </li>
                 <li class="nav-item"><a href="../profile/account.php" class="nav-link">My Account</a></li>
                 <li class="nav-item"><a href="../profile/settings.php" class="nav-link">Settings</a></li>
             </ul>
