@@ -30,9 +30,12 @@ if ($result->num_rows === 0) {
 $session = $result->fetch_assoc();
 $user_id = $session['user_id'];
 
+// Check if requesting another user's info
+$requested_user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : $user_id;
+
 // Get user data
-$stmt = $mysqli->prepare('SELECT username, email, first_name, last_name, profile_photo, last_login FROM users WHERE id = ?');
-$stmt->bind_param('i', $user_id);
+$stmt = $mysqli->prepare('SELECT id, username, email, first_name, last_name, profile_photo, last_login FROM users WHERE id = ?');
+$stmt->bind_param('i', $requested_user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -44,11 +47,15 @@ if ($result->num_rows === 0) {
 $user = $result->fetch_assoc();
 
 echo json_encode([
-    'username' => $user['username'],
-    'email' => $user['email'],
-    'first_name' => $user['first_name'],
-    'last_name' => $user['last_name'],
-    'profile_photo' => $user['profile_photo'],
-    'last_login' => $user['last_login']
+    'success' => true,
+    'user' => [
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'email' => $user['email'],
+        'first_name' => $user['first_name'],
+        'last_name' => $user['last_name'],
+        'profile_photo' => $user['profile_photo'],
+        'last_login' => $user['last_login']
+    ]
 ]);
 ?>
