@@ -230,6 +230,13 @@
             align-items: center;
             justify-content: center;
             color: #9b2c1a;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .post-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(155, 44, 26, 0.3);
         }
 
         .post-user {
@@ -240,6 +247,13 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .post-name:hover {
+            color: #9b2c1a;
+            text-decoration: underline;
         }
 
         .post-time {
@@ -2140,11 +2154,11 @@
                         return `
                         <article class="post" data-post-id="${post.id}" data-user-id="${post.user_id}">
                             <div class="post-header">
-                                <div class="post-avatar">
+                                <div class="post-avatar" onclick="openDirectMessage(${post.user_id})" title="Send message to ${post.first_name} ${post.last_name}">
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div class="post-user">
-                                    <div class="post-name">${post.first_name} ${post.last_name}</div>
+                                    <div class="post-name" onclick="openDirectMessage(${post.user_id})" title="Send message">${post.first_name} ${post.last_name}</div>
                                     <div class="post-time">${getTimeAgo(new Date(post.created_at))}</div>
                                 </div>
                                 <div class="post-header-extras">
@@ -2846,6 +2860,18 @@
                     calendarViewModal.classList.remove('show');
                 }
             });
+
+            // Open direct message with a user
+            window.openDirectMessage = function(userId) {
+                console.log('openDirectMessage called with userId:', userId);
+                if (!userId) {
+                    console.error('No userId provided');
+                    return;
+                }
+                const url = `direct-message.php?user_id=${userId}`;
+                console.log('Redirecting to:', url);
+                window.location.href = url;
+            };
 
             // Initial load
             loadPosts();

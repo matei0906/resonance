@@ -456,19 +456,22 @@
 
                 const data = await response.json();
                 
+                // Check if we have the user object (new format) or direct properties (old format)
+                const user = data.user || data;
+                
                 // Populate fields
-                document.getElementById('fullName').textContent = data.first_name + ' ' + data.last_name;
-                document.getElementById('username').textContent = '@' + data.username;
-                document.getElementById('email').value = data.email;
-                document.getElementById('firstName').value = data.first_name;
-                document.getElementById('lastName').value = data.last_name;
-                document.getElementById('lastLogin').textContent = getTimeAgo(new Date(data.last_login));
+                document.getElementById('fullName').textContent = user.first_name + ' ' + user.last_name;
+                document.getElementById('username').textContent = '@' + user.username;
+                document.getElementById('email').value = user.email;
+                document.getElementById('firstName').value = user.first_name;
+                document.getElementById('lastName').value = user.last_name;
+                document.getElementById('lastLogin').textContent = getTimeAgo(new Date(user.last_login));
                 
                 // Set profile photo with fallback to default
                 const profilePhotoElement = document.getElementById('profilePhoto');
-                if (data.profile_photo) {
-                    console.log('Loading profile photo:', data.profile_photo + '?t=' + Date.now());
-                    profilePhotoElement.src = data.profile_photo + '?t=' + Date.now();
+                if (user.profile_photo) {
+                    console.log('Loading profile photo:', user.profile_photo + '?t=' + Date.now());
+                    profilePhotoElement.src = user.profile_photo + '?t=' + Date.now();
                 } else {
                     console.log('No profile photo found, using default');
                     profilePhotoElement.src = '../../assets/images/default.png';
