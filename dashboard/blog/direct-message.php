@@ -277,6 +277,78 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* Social Links Dropdown */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-dropdown {
+            position: relative;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .social-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-sm);
+            z-index: 100;
+        }
+
+        .social-dropdown:hover .social-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .social-dropdown-item {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .social-dropdown-item:hover {
+            background: var(--bg-secondary);
+            color: #ff6b35;
+        }
+
+        .social-dropdown-item i {
+            margin-right: 0.5rem;
+            width: 16px;
+        }
     </style>
 </head>
 <body>
@@ -373,8 +445,32 @@
                 <div class="footer-section">
                     <h4>Follow Us</h4>
                     <div class="social-links">
-                        <a href="https://github.com/matei0906/" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/matei-stoica-698aa4348/" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <div class="social-dropdown">
+                            <div class="social-link" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <div class="social-dropdown-menu">
+                                <a href="https://github.com/matei0906/" class="social-dropdown-item" target="_blank">
+                                    <i class="fas fa-user"></i> Matei Stoica
+                                </a>
+                                <a href="https://github.com/brzozs" class="social-dropdown-item" target="_blank">
+                                    <i class="fas fa-user"></i> Sebastian Brzozowski
+                                </a>
+                            </div>
+                        </div>
+                        <div class="social-dropdown">
+                            <div class="social-link" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </div>
+                            <div class="social-dropdown-menu">
+                                <a href="https://www.linkedin.com/in/matei-stoica-698aa4348/" class="social-dropdown-item" target="_blank">
+                                    <i class="fas fa-user"></i> Matei Stoica
+                                </a>
+                                <a href="https://www.linkedin.com/in/sebastian-brzozowski-848069358/" class="social-dropdown-item" target="_blank">
+                                    <i class="fas fa-user"></i> Sebastian Brzozowski
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
